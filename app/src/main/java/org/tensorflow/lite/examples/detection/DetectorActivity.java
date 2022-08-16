@@ -227,7 +227,9 @@ public static String speakThis="";
                             Log.e("here","size is greater than 0");
                             Log.e("Checking",String.valueOf(voice_text.matches(".*mobile.*|.*phone.*"))+" "+voice_text);
                             String title = results.get(0).getTitle();
-                            if (voice_text.matches(".*mobile.*|.*phone.*")) {
+                            String re=".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*oven.*|.*mobile.*|.*phone.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
+
+                            if (voice_text.matches(re)) {
 
                                 Log.i("Is Class Detected",String.valueOf(voice_text.contains(title.split("is")[0])));
 
