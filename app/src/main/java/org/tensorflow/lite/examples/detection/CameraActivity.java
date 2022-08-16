@@ -67,7 +67,7 @@ public abstract class CameraActivity extends AppCompatActivity
         Camera.PreviewCallback,
         CompoundButton.OnCheckedChangeListener,
         View.OnClickListener {
-  public  static String voice_text = "";
+  public String voice_text = "";
   public TextToSpeech mTTS;
   private static final Logger LOGGER = new Logger();
 
@@ -110,6 +110,7 @@ public abstract class CameraActivity extends AppCompatActivity
 //    Toolbar toolbar = findViewById(R.id.toolbar);
 //    setSupportActionBar(toolbar);
 //    getSupportActionBar().setDisplayShowTitleEnabled(false);
+    speechBtn= findViewById(R.id.button);
     mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
       @Override
       public void onInit(int status) {
@@ -117,14 +118,16 @@ public abstract class CameraActivity extends AppCompatActivity
          int rs= mTTS.setLanguage(Locale.ENGLISH);
          if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED){
            Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
+         }else{
+           mTTS.speak("Press Button At Bottom And "+speechBtn.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
          }
         }else {
           Toast.makeText(getApplicationContext(),"Initialization Failed",Toast.LENGTH_SHORT).show();
 
         }
       }
-    });
-     speechBtn= findViewById(R.id.button);
+    }, "com.google.android.tts");
+
 
 //     mTTS.speak("I am Here",TextToSpeech.QUEUE_FLUSH,null);
     speechBtn.setOnClickListener(new View.OnClickListener(){
@@ -141,6 +144,7 @@ public abstract class CameraActivity extends AppCompatActivity
         }
       }
     });
+
     if (hasPermission()) {
       setFragment();
     } else {

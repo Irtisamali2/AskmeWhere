@@ -56,6 +56,7 @@ import org.tensorflow.lite.examples.detection.tracking.MultiBoxTracker;
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
 public static String speakThis="";
+    int count = 0;
     private static final int TF_OD_API_INPUT_SIZE = 416;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
@@ -223,17 +224,21 @@ public static String speakThis="";
 
                         if (results.size() > 0) {
 
+                            Log.e("here","size is greater than 0");
+                            Log.e("Checking",String.valueOf(voice_text.matches(".*mobile.*|.*phone.*"))+" "+voice_text);
+                            String title = results.get(0).getTitle();
+                            if (voice_text.matches(".*mobile.*|.*phone.*")) {
 
-                            name = results.get(0).getTitle();
-                            if (!voice_text.isEmpty()){
-                            confi = results.get(0).getConfidence();
-                            voice_text = "";
-                            speakThis =  name+ " and I am " +String.format("%.02f", confi*100) + " percent Sure";
-                            setSpeechButton(results.get(0).getTitle());
-                            Log.e("CHECK", "run: " + name);
-                            Log.e("CHECK", "run: " + confi);
+                                Log.i("Is Class Detected",String.valueOf(voice_text.contains(title.split("is")[0])));
+
+                                    confi = results.get(0).getConfidence();
+                                    speakThis = title + " and I am " + String.format("%.02f", confi * 100) + " percent Sure";
+//                                    setSpeechButton(results.get(0).getTitle());
+                                    Log.e("CHECK", "run: " + title);
+                                    Log.e("CHECK", "run: " + confi);
 //                            Log.e("CHECK", "run: " + btnText
 //                            );
+
                         }
                         }
 
@@ -259,8 +264,8 @@ public static String speakThis="";
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
                             name=result.getTitle();
-
-                            if (location != null && result.getConfidence() >= minimumConfidence) {
+//Logic to display or not
+                            if (location != null && result.getConfidence() >= minimumConfidence && !speakThis.isEmpty() ) {
                                 canvas.drawRect(location, paint);
                                 confi=100*result.getConfidence();
                                 cropToFrameTransform.mapRect(location);
@@ -301,6 +306,7 @@ public static String speakThis="";
                                        if(speakThis!=""){
                                            mTTS.speak(speakThis,TextToSpeech.QUEUE_FLUSH,null);
                                            speakThis="";
+                                           voice_text="";
                                        }
 
                                     }
@@ -368,6 +374,11 @@ public static String speakThis="";
     }
 
     @Override
+    public synchronized void onStart() {
+        super.onStart();
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.tfe_od_camera_connection_fragment_tracking;
     }
@@ -385,6 +396,8 @@ public static String speakThis="";
 
     @Override
     protected void setUseNNAPI(final boolean isChecked) {
+
+
         runInBackground(() -> detector.setUseNNAPI(isChecked));
     }
 
