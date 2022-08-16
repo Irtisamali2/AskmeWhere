@@ -1,14 +1,17 @@
-/* Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+/*
+
+Copyright 2019 The TensorFlow Authors. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-    http://www.apache.org/licenses/LICENSE-2.0
+You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-==============================================================================*/
+==============================================================================
+
+*/
 
 package org.tensorflow.lite.examples.detection.tflite;
 
@@ -17,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Trace;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import org.tensorflow.lite.examples.detection.distance.DistanceFinder;
 import java.io.BufferedReader;
@@ -30,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Vector;
@@ -201,6 +206,8 @@ public class YoloV4Classifier implements Classifier {
     private Interpreter tfLite;
 
     private YoloV4Classifier() {
+
+
     }
 
     //non maximum suppression
@@ -473,6 +480,13 @@ public class YoloV4Classifier implements Classifier {
                 //
                 String distanceInInches = DistanceFinder.getDistanceInInches(labels.get(detectedClass),w_pixel);
                 Log.i("pixel to distance",String.valueOf(distanceInInches));
+                // TTS read value of distance in inches using tts engine
+
+
+
+
+
+
                 final RectF rectF = new RectF(
                         Math.max(0, xPos - w / 2),
                         Math.max(0, yPos - h / 2),

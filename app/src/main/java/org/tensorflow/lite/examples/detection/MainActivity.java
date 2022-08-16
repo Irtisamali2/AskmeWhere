@@ -202,8 +202,7 @@ public class MainActivity extends AppCompatActivity {
 //        tracker.trackResults(mappedRecognitions, new Random().nextInt());
 //        trackingOverlay.postInvalidate();
         imageView.setImageBitmap(bitmap);
-
-            int speach=texttospeach.speak(name,TextToSpeech.QUEUE_FLUSH,null);}
+        int speach=texttospeach.speak(name,TextToSpeech.QUEUE_FLUSH,null);}
 
 
 }

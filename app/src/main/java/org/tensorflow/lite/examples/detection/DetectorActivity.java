@@ -111,6 +111,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             TF_OD_API_MODEL_FILE,
                             TF_OD_API_LABELS_FILE,
                             TF_OD_API_IS_QUANTIZED);
+
+            // get title from detector
+
+
+
 //            detector = TFLiteObjectDetectionAPIModel.create(
 //                    getAssets(),
 //                    TF_OD_API_MODEL_FILE,
@@ -198,6 +203,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             ImageUtils.saveBitmap(croppedBitmap);
         }
 
+        /** background **/
         runInBackground(
                 new Runnable() {
                     @Override
@@ -281,9 +287,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                 new Runnable() {
                                     @Override
                                     public void run() {
-                                        showFrameInfo(previewWidth + "x" + previewHeight);
-                                        showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
-                                        showInference(lastProcessingTimeMs + "ms");
+//                                        showFrameInfo(previewWidth + "x" + previewHeight);
+//                                        showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
+//                                        showInference(lastProcessingTimeMs + "ms");
                                     }
                                 });
                     }

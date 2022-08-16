@@ -43,7 +43,7 @@ public class DistanceFinder {
                 case "Watch":
                     return String.format("%.02f",new DistanceModel("watch", 147.606f, 1.65354f, 25.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
                 case "Remote control":
-                    return String.format("%.02f",new DistanceModel("remote", 147.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
 
 
             }
