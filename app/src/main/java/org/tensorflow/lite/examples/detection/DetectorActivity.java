@@ -32,6 +32,7 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -105,8 +106,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         int cropSize = TF_OD_API_INPUT_SIZE;
 
         try {
+            Button btn = (Button) findViewById(R.id.button);
             detector =
                     YoloV4Classifier.create(
+                            btn.getText().toString(),
+                            this,
                             getAssets(),
                             TF_OD_API_MODEL_FILE,
                             TF_OD_API_LABELS_FILE,
@@ -275,7 +279,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             }
                         }
 
-                        //int speach=texttospeach.speak(name,TextToSpeech.QUEUE_FLUSH,null);
+//                        int speach=texttospeach.speak(name,TextToSpeech.QUEUE_FLUSH,null);
 
                     //mp.start();
                         tracker.trackResults(mappedRecognitions, currTimestamp);
@@ -283,15 +287,15 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                         computingDetection = false;
 
-                        runOnUiThread(
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
+//                        runOnUiThread(
+//                                new Runnable() {
+//                                    @Override
+//                                    public void run() {
 //                                        showFrameInfo(previewWidth + "x" + previewHeight);
 //                                        showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
 //                                        showInference(lastProcessingTimeMs + "ms");
-                                    }
-                                });
+//                                    }
+//                                });
                     }
                 });
     }

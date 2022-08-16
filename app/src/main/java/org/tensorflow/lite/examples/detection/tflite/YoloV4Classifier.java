@@ -15,6 +15,7 @@ limitations under the License.
 
 package org.tensorflow.lite.examples.detection.tflite;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
@@ -74,6 +75,8 @@ public class YoloV4Classifier implements Classifier {
      * @param isQuantized   Boolean representing model is quantized or not
      */
     public static Classifier create(
+            String btnName,
+            final Context ctx,
             final AssetManager assetManager,
             final String modelFilename,
             final String labelFilename,

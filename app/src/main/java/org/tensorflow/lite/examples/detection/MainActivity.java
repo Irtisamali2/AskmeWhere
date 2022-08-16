@@ -160,8 +160,12 @@ public class MainActivity extends AppCompatActivity {
         tracker.setFrameConfiguration(TF_OD_API_INPUT_SIZE, TF_OD_API_INPUT_SIZE, sensorOrientation);
 
         try {
+//            Button btn = (Button) findViewById(R.id.button);
+
             detector =
                     YoloV4Classifier.create(
+                            " ",
+                            this,
                             getAssets(),
                             TF_OD_API_MODEL_FILE,
                             TF_OD_API_LABELS_FILE,

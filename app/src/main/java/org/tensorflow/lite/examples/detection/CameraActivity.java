@@ -19,6 +19,7 @@ package org.tensorflow.lite.examples.detection;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -35,16 +36,19 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Trace;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
 
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -52,6 +56,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import org.tensorflow.lite.examples.detection.env.ImageUtils;
@@ -89,7 +94,8 @@ public abstract class CameraActivity extends AppCompatActivity
   private ImageView plusImageView, minusImageView;
   private SwitchCompat apiSwitchCompat;
   private TextView threadsTextView;
-
+  public int  REQUEST_CODE_SPEECH_INPUT=1000;
+  Button speechBtn;
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
 
@@ -103,6 +109,22 @@ public abstract class CameraActivity extends AppCompatActivity
 //    setSupportActionBar(toolbar);
 //    getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+     speechBtn= findViewById(R.id.button);
+    speechBtn.setOnClickListener(new View.OnClickListener(){
+
+      @Override
+      public void onClick(View v) {
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
+        try {
+          startActivityForResult(intent,REQUEST_CODE_SPEECH_INPUT );//speech
+        }catch (Exception e){
+          Toast.makeText(getApplicationContext(), " "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+        }
+      }
+    });
     if (hasPermission()) {
       setFragment();
     } else {
@@ -344,6 +366,23 @@ public abstract class CameraActivity extends AppCompatActivity
   protected synchronized void runInBackground(final Runnable r) {
     if (handler != null) {
       handler.post(r);
+    }
+  }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    switch (requestCode){
+      case 1000:
+        if (resultCode == RESULT_OK && null != data) {
+          ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+          String text = result.get(0);
+          speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for)+"\n"+text);
+          Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+        }
+        break;
+      default:
+        throw new IllegalStateException("Unexpected value: " + requestCode);
     }
   }
 
