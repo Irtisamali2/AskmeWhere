@@ -224,26 +224,30 @@ public static String speakThis="";
 
                         if (results.size() > 0) {
 
-                            Log.e("here","size is greater than 0");
-                            Log.e("Checking",String.valueOf(voice_text.matches(".*mobile.*|.*phone.*"))+" "+voice_text);
+                            Log.e("here", "size is greater than 0");
+                            Log.e("Checking", String.valueOf(voice_text.matches(".*mobile.*|.*phone.*")) + " " + voice_text);
                             String title = results.get(0).getTitle();
-                            String re=".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*oven.*|.*mobile.*|.*phone.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
+                            String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*oven.*|.*mobile.*|.*phone.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
+                           Log.e("msg",".*" + title.split(" ")[0].toLowerCase()+ ".*"+" "+String.valueOf(voice_text.matches(".*" + title.split("is")[0].toLowerCase()+ ".*")));
+                            if (voice_text.matches(re) && voice_text.matches(".*" + title.split(" ")[0].toLowerCase()+ ".*")) {
 
-                            if (voice_text.matches(re)) {
+                                Log.i("Is Class Detected", String.valueOf(voice_text.contains(title.split("is")[0])));
 
-                                Log.i("Is Class Detected",String.valueOf(voice_text.contains(title.split("is")[0])));
-
-                                    confi = results.get(0).getConfidence();
-                                    speakThis = title + " and I am " + String.format("%.02f", confi * 100) + " percent Sure";
+                                confi = results.get(0).getConfidence();
+                                speakThis = title + " and I am " + String.format("%.02f", confi * 100) + " percent Sure";
 //                                    setSpeechButton(results.get(0).getTitle());
-                                    Log.e("CHECK", "run: " + title);
-                                    Log.e("CHECK", "run: " + confi);
+                                Log.e("CHECK", "run: " + title);
+                                Log.e("CHECK", "run: " + confi);
+                                voice_text = "";
 //                            Log.e("CHECK", "run: " + btnText
 //                            );
 
+                            } else if (voice_text.isEmpty() || voice_text.matches(re)) {
+                            } else {
+                                speakThis = "I am not sure what you are looking for, I beleive I never heard of it please try different object";
+                                voice_text="";
+                            }
                         }
-                        }
-
 
 
                         cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
@@ -305,7 +309,7 @@ public static String speakThis="";
                                 new Runnable() {
                                     @Override
                                     public void run() {
-                                       if(speakThis!=""){
+                                       if(!speakThis.isEmpty()){
                                            mTTS.speak(speakThis,TextToSpeech.QUEUE_FLUSH,null);
                                            speakThis="";
                                            voice_text="";
