@@ -67,6 +67,8 @@ public abstract class CameraActivity extends AppCompatActivity
         Camera.PreviewCallback,
         CompoundButton.OnCheckedChangeListener,
         View.OnClickListener {
+  public  static String voice_text = "";
+  public TextToSpeech mTTS;
   private static final Logger LOGGER = new Logger();
 
   private static final int PERMISSIONS_REQUEST = 1;
@@ -108,13 +110,27 @@ public abstract class CameraActivity extends AppCompatActivity
 //    Toolbar toolbar = findViewById(R.id.toolbar);
 //    setSupportActionBar(toolbar);
 //    getSupportActionBar().setDisplayShowTitleEnabled(false);
+    mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+      @Override
+      public void onInit(int status) {
+        if(status==TextToSpeech.SUCCESS){
+         int rs= mTTS.setLanguage(Locale.ENGLISH);
+         if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED){
+           Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
+         }
+        }else {
+          Toast.makeText(getApplicationContext(),"Initialization Failed",Toast.LENGTH_SHORT).show();
 
+        }
+      }
+    });
      speechBtn= findViewById(R.id.button);
+
+//     mTTS.speak("I am Here",TextToSpeech.QUEUE_FLUSH,null);
     speechBtn.setOnClickListener(new View.OnClickListener(){
 
       @Override
       public void onClick(View v) {
-
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
@@ -131,7 +147,7 @@ public abstract class CameraActivity extends AppCompatActivity
       requestPermission();
     }
 
-//    threadsTextView = findViewById(R.id.threads);
+    //    threadsTextView = findViewById(R.id.threads);
 //    plusImageView = findViewById(R.id.plus);
 //    minusImageView = findViewById(R.id.minus);
 //    apiSwitchCompat = findViewById(R.id.api_info_switch);
@@ -360,6 +376,10 @@ public abstract class CameraActivity extends AppCompatActivity
   @Override
   public synchronized void onDestroy() {
     LOGGER.d("onDestroy " + this);
+    if(mTTS!=null){
+      mTTS.stop();
+      mTTS.shutdown();
+    }
     super.onDestroy();
   }
 
@@ -377,6 +397,7 @@ public abstract class CameraActivity extends AppCompatActivity
         if (resultCode == RESULT_OK && null != data) {
           ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
           String text = result.get(0);
+          voice_text=text;
           speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for)+"\n"+text);
           Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
         }

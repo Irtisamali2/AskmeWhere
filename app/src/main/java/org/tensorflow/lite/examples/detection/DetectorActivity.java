@@ -55,7 +55,7 @@ import org.tensorflow.lite.examples.detection.tracking.MultiBoxTracker;
  */
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
-
+public static String speakThis="";
     private static final int TF_OD_API_INPUT_SIZE = 416;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
@@ -217,7 +217,27 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
                         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
-                        Log.e("CHECK", "run: " + results.size());
+
+
+                        // get title from detector if it is not null and avoid null pointer exception
+
+                        if (results.size() > 0) {
+
+
+                            name = results.get(0).getTitle();
+                            if (!voice_text.isEmpty()){
+                            confi = results.get(0).getConfidence();
+                            voice_text = "";
+                            speakThis =  name+ " and I am " +String.format("%.02f", confi*100) + " percent Sure";
+                            setSpeechButton(results.get(0).getTitle());
+                            Log.e("CHECK", "run: " + name);
+                            Log.e("CHECK", "run: " + confi);
+//                            Log.e("CHECK", "run: " + btnText
+//                            );
+                        }
+                        }
+
+
 
                         cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
                         final Canvas canvas = new Canvas(cropCopyBitmap);
@@ -247,20 +267,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
-                                try{     if(result.getTitle().equals("Mobile phone") ){
 
-                                   // Toast.makeText(getApplicationContext(),"Mobile",Toast.LENGTH_LONG).show();
-                                     mp1.start();
-
-                                    //playMp3("mobile.mp3");
-
-                                }else if(result.getTitle().equals("Person")){
-                                    mp.start();
-                                }
-
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
 //                                try {
 //                                    if(result.getTitle().equalsIgnoreCase("Mobile phone")){
 //                                        mp1.start();
@@ -287,17 +294,77 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                         computingDetection = false;
 
-//                        runOnUiThread(
-//                                new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        showFrameInfo(previewWidth + "x" + previewHeight);
-//                                        showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
-//                                        showInference(lastProcessingTimeMs + "ms");
-//                                    }
-//                                });
+                        runOnUiThread(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                       if(speakThis!=""){
+                                           mTTS.speak(speakThis,TextToSpeech.QUEUE_FLUSH,null);
+                                           speakThis="";
+                                       }
+
+                                    }
+                                });
                     }
                 });
+    }
+
+    private void setSpeechButton(String name) {
+        // check voice text contain below strings
+        //              "Person";
+        //              "Car"
+        //            "Microwave oven";
+        //            "Mobile phone";
+        //            "Apple"
+        //            "Cat"
+        //            "Mug"
+        //            "Platter"
+        //            "Watch"
+        //            "Remote control"
+
+
+        if (voice_text.toUpperCase(Locale.ROOT).contains("PHONE") || voice_text.toUpperCase(Locale.ROOT).contains("Mobile")){
+            Log.e("CHECK", "phone");
+            // Speak the text
+            speakThis=name;
+            voice_text="";
+        }else  if (voice_text.toUpperCase(Locale.ROOT).contains("PERSON")){
+            Log.e("CHECK", "PERSON");
+            // Speak the text
+            speakThis=name;
+            voice_text="";
+        }else  if (voice_text.toUpperCase(Locale.ROOT).contains("Microwave".toUpperCase(Locale.ROOT))){
+            Log.e("CHECK", "Microwave");
+            // Speak the text
+            speakThis=name;
+            voice_text="";
+        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Remote".toUpperCase(Locale.ROOT))){
+            Log.e("CHECK", "Remote");
+            // Speak the text
+            speakThis=name;
+            voice_text="";
+        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Watch".toUpperCase(Locale.ROOT))){
+            Log.e("CHECK", "\"Watch\"");
+            // Speak the text
+            speakThis=name;
+            voice_text="";
+        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Mug".toUpperCase(Locale.ROOT))){
+            Log.e("CHECK", "\"Mug\"");
+            // Speak the text
+            speakThis=name;
+            voice_text="";
+        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Apple".toUpperCase(Locale.ROOT))){
+            Log.e("CHECK", "\"Mug\"");
+            // Speak the text
+            speakThis=name;
+            voice_text="";
+        }else if (voice_text.toUpperCase(Locale.ROOT).contains("car".toUpperCase(Locale.ROOT))){
+            Log.e("CHECK", "\"car\"");
+            // Speak the text
+            speakThis=name;
+            voice_text="";
+        }
+
     }
 
     @Override
