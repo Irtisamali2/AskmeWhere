@@ -227,7 +227,6 @@ public static String speakThis="";
                             Log.e("here", "size is greater than 0");
                             Log.e("Checking", String.valueOf(voice_text.matches(".*mobile.*|.*phone.*")) + " " + voice_text);
                             String title = results.get(0).getTitle();
-                            String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*oven.*|.*mobile.*|.*phone.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
                            Log.e("msg",".*" + title.split(" ")[0].toLowerCase()+ ".*"+" "+String.valueOf(voice_text.matches(".*" + title.split("is")[0].toLowerCase()+ ".*")));
                             if (voice_text.matches(re) && voice_text.matches(".*" + title.split(" ")[0].toLowerCase()+ ".*")) {
 
@@ -242,12 +241,11 @@ public static String speakThis="";
 //                            Log.e("CHECK", "run: " + btnText
 //                            );
 
-                            } else if (voice_text.isEmpty() || voice_text.matches(re)) {
-                            } else {
-                                speakThis = "I am not sure what you are looking for, I beleive I never heard of it please try different object";
-                                voice_text="";
                             }
                         }
+
+
+
 
 
                         cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);

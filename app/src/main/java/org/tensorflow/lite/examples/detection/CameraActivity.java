@@ -86,6 +86,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private int yRowStride;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
+  public String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
 
   private LinearLayout bottomSheetLayout;
   private LinearLayout gestureLayout;
@@ -401,9 +402,14 @@ public abstract class CameraActivity extends AppCompatActivity
         if (resultCode == RESULT_OK && null != data) {
           ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
           String text = result.get(0);
-          voice_text=text;
-          speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for)+"\n"+text);
-          Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+          if(text.matches(re)) {
+            voice_text = text;
+            speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+          }else {
+            mTTS.speak("I am not sure what are you looking for try different object",TextToSpeech.QUEUE_FLUSH,null);
+
+          }
         }
         break;
       default:
