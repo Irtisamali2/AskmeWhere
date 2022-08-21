@@ -142,6 +142,7 @@ public boolean  isSpeaking=false;
         try {
           startActivityForResult(intent,REQUEST_CODE_SPEECH_INPUT );//speech
         }catch (Exception e){
+          LOGGER.e("Exception:",e.toString());
           Toast.makeText(getApplicationContext(), " "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
         }
       }
@@ -398,6 +399,7 @@ public boolean  isSpeaking=false;
   @Override
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
+    if(requestCode==0) return;
     switch (requestCode){
       case 1000:
         if (resultCode == RESULT_OK && null != data) {

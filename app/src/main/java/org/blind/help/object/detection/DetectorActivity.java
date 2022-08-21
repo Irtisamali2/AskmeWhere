@@ -72,7 +72,7 @@ public static String speakThis="";
     private static final float TEXT_SIZE_DIP = 10;
     OverlayView trackingOverlay;
     private Integer sensorOrientation;
-    MediaPlayer mp ,mp1,mp2;
+//    MediaPlayer mp ,mp1,mp2;
 
     private Classifier detector;
 
@@ -184,8 +184,8 @@ public static String speakThis="";
 //                }
 //            }
 //        });
-      mp  = MediaPlayer.create(this, R.raw.person);
-      mp1  = MediaPlayer.create(this, R.raw.mobile);
+//      mp  = MediaPlayer.create(this, R.raw.person);
+//      mp1  = MediaPlayer.create(this, R.raw.mobile);
         ++timestamp;
         final long currTimestamp = timestamp;
         trackingOverlay.postInvalidate();
@@ -214,6 +214,10 @@ public static String speakThis="";
                 new Runnable() {
                     @Override
                     public void run() {
+//                        /*testing*/
+//                        isStopLooking=false;
+//                        isAllLooking=true;
+                        /**********testing*************/
                         LOGGER.i("Running detection on image " + currTimestamp);
                         final long startTime = SystemClock.uptimeMillis();
                         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
@@ -260,8 +264,9 @@ public static String speakThis="";
 
 
                         }
-
-
+                        // testing for crashing
+//                        speakThis = " and I am " + String.format("%.02f", confi * 100) + " percent Sure\n ";
+//
 
 
 
