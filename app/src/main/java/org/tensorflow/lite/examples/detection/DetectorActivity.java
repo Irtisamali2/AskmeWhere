@@ -260,13 +260,7 @@ public static String speakThis="";
 
                         }
 
-                        if (isStopLooking){
-                            voice_text = "";
-                            speakThis="I have stopped looking for objects";
 
-                            isAllLooking = false;
-                            isStopLooking=false;
-                        }
 
 
 

@@ -412,12 +412,17 @@ public boolean  isSpeaking=false;
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
           }else  if(text.matches(".*stop.*")) {
             voice_text = "Object Detection Has Been Stopped";
+            mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
+            voice_text="";
+
             isStopLooking=true;
             isAllLooking=false;
             speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
           }else  if(text.matches(".*all.*")) {
             voice_text = "Looking For All Objects";
+            mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
+            voice_text="";
             isStopLooking=false;
             isAllLooking=true;
             speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
