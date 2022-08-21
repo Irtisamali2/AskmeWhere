@@ -79,7 +79,7 @@ public static String speakThis="";
     private Bitmap rgbFrameBitmap = null;
     private Bitmap croppedBitmap = null;
     private Bitmap cropCopyBitmap = null;
-
+    private long waitingTime = 0;
     private boolean computingDetection = false;
 
     private long timestamp = 0;
@@ -219,32 +219,54 @@ public static String speakThis="";
                         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
 
+                        if (mTTS.isSpeaking()){
+                            isSpeaking=true;
+                        }
+                        if (!mTTS.isSpeaking()){
+                            isSpeaking=false;
 
+                    }
                         // get title from detector if it is not null and avoid null pointer exception
 
-                        if (results.size() > 0) {
+                        if (results.size() > 0 && !isSpeaking) {
 
                             Log.e("here", "size is greater than 0");
                             Log.e("Checking", String.valueOf(voice_text.matches(".*mobile.*|.*phone.*")) + " " + voice_text);
                             String title = results.get(0).getTitle();
                            Log.e("msg",".*" + title.split(" ")[0].toLowerCase()+ ".*"+" "+String.valueOf(voice_text.matches(".*" + title.split("is")[0].toLowerCase()+ ".*")));
-                            if (voice_text.matches(re) && voice_text.matches(".*" + title.split(" ")[0].toLowerCase()+ ".*")) {
+
+                            if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + title.split(" ")[0].toLowerCase()+ ".*")) {
 
                                 Log.i("Is Class Detected", String.valueOf(voice_text.contains(title.split("is")[0])));
 
                                 confi = results.get(0).getConfidence();
-                                speakThis = title + " and I am " + String.format("%.02f", confi * 100) + " percent Sure";
+                                speakThis = title + " and I am " + String.format("%.02f", confi * 100) + " percent Sure\n ";
 //                                    setSpeechButton(results.get(0).getTitle());
                                 Log.e("CHECK", "run: " + title);
                                 Log.e("CHECK", "run: " + confi);
-                                voice_text = "";
+
 //                            Log.e("CHECK", "run: " + btnText
 //                            );
 
+                            }else if (isAllLooking){
+                                confi = results.get(0).getConfidence();
+                                speakThis = title + " and I am " + String.format("%.02f", confi * 100) + " percent Sure";
+                                isStopLooking = false;
+
                             }
+
+
+
+
                         }
 
+                        if (isStopLooking){
+                            voice_text = "";
+                            speakThis="I have stopped looking for objects";
 
+                            isAllLooking = false;
+                            isStopLooking=false;
+                        }
 
 
 
@@ -264,12 +286,12 @@ public static String speakThis="";
 
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
-
+                        if(!speakThis.isEmpty() && !isSpeaking)
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
                             name=result.getTitle();
 //Logic to display or not
-                            if (location != null && result.getConfidence() >= minimumConfidence && !speakThis.isEmpty() ) {
+                            if (location != null && result.getConfidence() >= minimumConfidence  ) {
                                 canvas.drawRect(location, paint);
                                 confi=100*result.getConfidence();
                                 cropToFrameTransform.mapRect(location);
@@ -308,9 +330,14 @@ public static String speakThis="";
                                     @Override
                                     public void run() {
                                        if(!speakThis.isEmpty()){
-                                           mTTS.speak(speakThis,TextToSpeech.QUEUE_FLUSH,null);
+                                          int rs= mTTS.speak(speakThis,TextToSpeech.QUEUE_FLUSH,null);
                                            speakThis="";
-                                           voice_text="";
+                                          if (mTTS.isSpeaking()){
+                                              isSpeaking=true;
+                                          }
+                                          if (!mTTS.isSpeaking())
+                                              isSpeaking=false;
+
                                        }
 
                                     }

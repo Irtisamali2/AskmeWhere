@@ -70,7 +70,7 @@ public abstract class CameraActivity extends AppCompatActivity
   public String voice_text = "";
   public TextToSpeech mTTS;
   private static final Logger LOGGER = new Logger();
-
+public boolean  isSpeaking=false;
   private static final int PERMISSIONS_REQUEST = 1;
 
   private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
@@ -91,6 +91,8 @@ public abstract class CameraActivity extends AppCompatActivity
   private LinearLayout bottomSheetLayout;
   private LinearLayout gestureLayout;
   private BottomSheetBehavior<LinearLayout> sheetBehavior;
+  public boolean isStopLooking=false;
+  public boolean isAllLooking=false;
 
   protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
   protected ImageView bottomSheetArrowImageView;
@@ -120,7 +122,7 @@ public abstract class CameraActivity extends AppCompatActivity
          if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED){
            Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
          }else{
-           mTTS.speak("Press Button At Bottom And "+speechBtn.getText().toString(),TextToSpeech.QUEUE_FLUSH,null);
+           mTTS.speak("Press Button At Bottom And "+speechBtn.getText().toString()+"or Say Stop To stop the Search or Say All to look all objects",TextToSpeech.QUEUE_FLUSH,null);
          }
         }else {
           Toast.makeText(getApplicationContext(),"Initialization Failed",Toast.LENGTH_SHORT).show();
@@ -405,8 +407,24 @@ public abstract class CameraActivity extends AppCompatActivity
           if(text.matches(re)) {
             voice_text = text;
             speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
+            isStopLooking=false;
+            isAllLooking=false;
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-          }else {
+          }else  if(text.matches(".*stop.*")) {
+            voice_text = "Object Detection Has Been Stopped";
+            isStopLooking=true;
+            isAllLooking=false;
+            speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+          }else  if(text.matches(".*all.*")) {
+            voice_text = "Looking For All Objects";
+            isStopLooking=false;
+            isAllLooking=true;
+            speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
+            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+          }else{
+            isStopLooking=true;
+            isAllLooking=false;
             mTTS.speak("I am not sure what are you looking for try different object",TextToSpeech.QUEUE_FLUSH,null);
 
           }
