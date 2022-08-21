@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.tensorflow.lite.examples.detection">
+    package="org.blind.help.object.detection">
 
     <uses-sdk />
 
@@ -13,14 +13,14 @@
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/tfe_od_app_name"
+        android:label="Blind Helper"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.ObjectDetection">
 
         <activity
             android:name="org.blind.help.object.detection.DetectorActivity"
-            android:label="@string/tfe_od_app_name"
+            android:label="Blind Helper"
             android:screenOrientation="portrait">
         </activity>
 

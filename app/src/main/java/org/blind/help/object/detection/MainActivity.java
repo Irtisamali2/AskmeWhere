@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import org.tensorflow.lite.examples.detection.R;
+
 import org.blind.help.object.detection.customview.OverlayView;
 import org.blind.help.object.detection.env.ImageUtils;
 import org.blind.help.object.detection.env.Logger;

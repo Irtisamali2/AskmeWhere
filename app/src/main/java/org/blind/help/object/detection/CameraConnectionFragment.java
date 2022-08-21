@@ -60,7 +60,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import org.tensorflow.lite.examples.detection.R;
+
 import org.blind.help.object.detection.customview.AutoFitTextureView;
 import org.blind.help.object.detection.env.Logger;
 

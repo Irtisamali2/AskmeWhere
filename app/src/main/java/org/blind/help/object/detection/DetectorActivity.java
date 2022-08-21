@@ -40,7 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
-import org.tensorflow.lite.examples.detection.R;
+import org.blind.help.object.detection.R;
 import org.blind.help.object.detection.customview.OverlayView;
 import org.blind.help.object.detection.customview.OverlayView.DrawCallback;
 import org.blind.help.object.detection.env.BorderedText;

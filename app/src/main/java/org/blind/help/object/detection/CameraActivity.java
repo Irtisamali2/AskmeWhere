@@ -59,7 +59,7 @@ import java.util.Locale;
 
 import org.blind.help.object.detection.env.ImageUtils;
 import org.blind.help.object.detection.env.Logger;
-import org.tensorflow.lite.examples.detection.R;
+import org.blind.help.object.detection.R;
 
 public abstract class CameraActivity extends AppCompatActivity
     implements OnImageAvailableListener,
