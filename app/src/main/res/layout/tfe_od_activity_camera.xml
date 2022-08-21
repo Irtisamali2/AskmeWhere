@@ -21,24 +21,27 @@
     android:layout_height="match_parent"
     android:background="#00000000">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
-        android:orientation="vertical">
+        android:background="@android:color/black">
 
 
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="533dp" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/please_speak_about_the_object_you_are_looking_for" />
+            android:layout_height="280dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:backgroundTint="#4DA7ACFF"
+            android:text="@string/please_speak_about_the_object_you_are_looking_for"
+            android:textColor="#FFFFFF" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
