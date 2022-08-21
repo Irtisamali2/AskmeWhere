@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "org.tensorflow.lite.examples.detection"
+        applicationId "org.tensorflow.help.examples.detection"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -48,11 +48,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
-//    implementation 'org.tensorflow:tensorflow-lite:0.0.0-nightly'
-//    implementation 'org.tensorflow:tensorflow-lite-gpu:0.0.0-nightly'
+//    implementation 'org.tensorflow:tensorflow-help:0.0.0-nightly'
+//    implementation 'org.tensorflow:tensorflow-help-gpu:0.0.0-nightly'
     implementation 'org.tensorflow:tensorflow-lite:2.2.0'
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.2.0'
-//    implementation 'org.tensorflow:tensorflow-lite:0.0.0-gpu-experimental'
+//    implementation 'org.tensorflow:tensorflow-help:0.0.0-gpu-experimental'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.code.gson:gson:2.8.6'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

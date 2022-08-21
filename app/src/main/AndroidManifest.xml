@@ -19,12 +19,12 @@
         android:theme="@style/AppTheme.ObjectDetection">
 
         <activity
-            android:name=".DetectorActivity"
+            android:name="org.blind.help.object.detection.DetectorActivity"
             android:label="@string/tfe_od_app_name"
             android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name=".MainActivity">
+        <activity android:name="org.blind.help.object.detection.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
