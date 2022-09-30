@@ -73,8 +73,8 @@ public boolean  isSpeaking=false;
   private static final int PERMISSIONS_REQUEST = 1;
 
   private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
-  protected int previewWidth = 0;
-  protected int previewHeight = 0;
+  protected int previewWidth = 1080;
+  protected int previewHeight = 2177;
   private boolean debug = false;
   private Handler handler;
   private HandlerThread handlerThread;

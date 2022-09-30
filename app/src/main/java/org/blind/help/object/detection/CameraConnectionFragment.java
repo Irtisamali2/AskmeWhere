@@ -72,7 +72,7 @@ public class CameraConnectionFragment extends Fragment {
    * The camera preview size will be chosen to be the smallest frame by pixel size capable of
    * containing a DESIRED_SIZE x DESIRED_SIZE square.
    */
-  private static final int MINIMUM_PREVIEW_SIZE = 1280;
+  private static final int MINIMUM_PREVIEW_SIZE = 2177;
 
   /** Conversion from screen rotation to JPEG orientation. */
   private static final SparseIntArray ORIENTATIONS = new SparseIntArray();

@@ -16,6 +16,7 @@
 
 package org.blind.help.object.detection;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -35,6 +36,7 @@ import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.io.Console;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,7 +69,7 @@ public static String speakThis="";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
-    private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
+    private static final Size DESIRED_PREVIEW_SIZE = new Size(getScreenWidth(), getScreenHeight()*2);
     private static final boolean SAVE_PREVIEW_BITMAP = false;
     private static final float TEXT_SIZE_DIP = 10;
     OverlayView trackingOverlay;
@@ -402,6 +404,14 @@ public static String speakThis="";
             voice_text="";
         }
 
+    }
+    public static int getScreenWidth() {
+        Log.i("wxh",""+Resources.getSystem().getDisplayMetrics().widthPixels+"x"+Resources.getSystem().getDisplayMetrics().heightPixels);
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     @Override
