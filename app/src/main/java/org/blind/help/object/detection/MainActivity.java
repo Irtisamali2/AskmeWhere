@@ -193,16 +193,11 @@ public class MainActivity extends AppCompatActivity {
             if (location != null && result.getConfidence() >= MINIMUM_CONFIDENCE_TF_OD_API) {
                 canvas.drawRect(location, paint);
                 name=result.getTitle();
-//                cropToFrameTransform.mapRect(location);
-//
-//                result.setLocation(location);
-//                mappedRecognitions.add(result);
+
             }
 
         }
 
-//        tracker.trackResults(mappedRecognitions, new Random().nextInt());
-//        trackingOverlay.postInvalidate();
         imageView.setImageBitmap(bitmap);
         int speach=texttospeach.speak(name,TextToSpeech.QUEUE_FLUSH,null);}
 
