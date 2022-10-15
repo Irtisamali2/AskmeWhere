@@ -120,16 +120,7 @@ public static String speakThis="";
                             TF_OD_API_LABELS_FILE,
                             TF_OD_API_IS_QUANTIZED);
 
-            // get title from detector
 
-
-
-//            detector = TFLiteObjectDetectionAPIModel.create(
-//                    getAssets(),
-//                    TF_OD_API_MODEL_FILE,
-//                    TF_OD_API_LABELS_FILE,
-//                    TF_OD_API_INPUT_SIZE,
-//                    TF_OD_API_IS_QUANTIZED);
             cropSize = TF_OD_API_INPUT_SIZE;
         } catch (final IOException e) {
             e.printStackTrace();
@@ -177,17 +168,7 @@ public static String speakThis="";
 
     @Override
     protected void processImage() {
-//        texttospeach = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-//            @Override
-//            public void onInit(int i) {
-//                if(i==TextToSpeech.SUCCESS){
-//                    int lang=texttospeach.setLanguage(Locale.ENGLISH);
-//
-//                }
-//            }
-//        });
-//      mp  = MediaPlayer.create(this, R.raw.person);
-//      mp1  = MediaPlayer.create(this, R.raw.mobile);
+
         ++timestamp;
         final long currTimestamp = timestamp;
         trackingOverlay.postInvalidate();
@@ -216,10 +197,7 @@ public static String speakThis="";
                 new Runnable() {
                     @Override
                     public void run() {
-//                        /*testing*/
-//                        isStopLooking=false;
-//                        isAllLooking=true;
-                        /**********testing*************/
+
                         LOGGER.i("Running detection on image " + currTimestamp);
                         final long startTime = SystemClock.uptimeMillis();
                         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
@@ -240,27 +218,8 @@ public static String speakThis="";
                             Log.e("here", "size is greater than 0");
                             Log.e("Checking", String.valueOf(voice_text.matches(".*mobile.*|.*phone.*")) + " " + voice_text);
                             String title = results.get(0).getTitle();
-                           Log.e("msg",".*" + title.split(" ")[0].toLowerCase()+ ".*"+" "+String.valueOf(voice_text.matches(".*" + title.split("is")[0].toLowerCase()+ ".*")));
 
-                            if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + title.split(" ")[0].toLowerCase()+ ".*")) {
 
-                                Log.i("Is Class Detected", String.valueOf(voice_text.contains(title.split("is")[0])));
-
-                                confi = results.get(0).getConfidence();
-                                speakThis = title + " and I am " + String.format("%.02f", confi * 100) + " percent Sure\n ";
-//                                    setSpeechButton(results.get(0).getTitle());
-                                Log.e("CHECK", "run: " + title);
-                                Log.e("CHECK", "run: " + confi);
-
-//                            Log.e("CHECK", "run: " + btnText
-//                            );
-
-                            }else if (isAllLooking){
-                                confi = results.get(0).getConfidence();
-                                speakThis = title + " and I am " + String.format("%.02f", confi * 100) + " percent Sure";
-                                isStopLooking = false;
-
-                            }
 
 
 
@@ -288,12 +247,26 @@ public static String speakThis="";
 
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
+
                         if(!speakThis.isEmpty() && !isSpeaking)
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
                             name=result.getTitle();
-//Logic to display or not
+
                             if (location != null && result.getConfidence() >= minimumConfidence  ) {
+                                if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + name.split(" ")[0].toLowerCase()+ ".*")) {
+
+
+                                    confi = result.getConfidence();
+                                    speakThis =speakThis+" and "+ name + " and I am " + String.format("%.02f", confi * 100) + " percent Sure\n ";
+
+
+                                }else if (isAllLooking){
+                                    confi = result.getConfidence();
+                                    speakThis = name + " and I am " + String.format("%.02f", confi * 100) + " percent Sure";
+                                    isStopLooking = false;
+
+                                }
                                 canvas.drawRect(location, paint);
                                 confi=100*result.getConfidence();
                                 cropToFrameTransform.mapRect(location);
@@ -301,27 +274,10 @@ public static String speakThis="";
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
 
-//                                try {
-//                                    if(result.getTitle().equalsIgnoreCase("Mobile phone")){
-//                                        mp1.start();
-//
-//                                    }else if(result.getTitle().equalsIgnoreCase("Person") ){
-//                                        mp.start();
-//
-//                                    }
-//                                    else{
-//
-//                                    }
-//                                }catch (Exception e){
-//                                    e.printStackTrace();
-//                                }
 
                             }
                         }
 
-//                        int speach=texttospeach.speak(name,TextToSpeech.QUEUE_FLUSH,null);
-
-                    //mp.start();
                         tracker.trackResults(mappedRecognitions, currTimestamp);
                         trackingOverlay.postInvalidate();
 
