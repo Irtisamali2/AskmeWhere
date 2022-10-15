@@ -59,14 +59,18 @@ import org.blind.help.object.detection.tracking.MultiBoxTracker;
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
 public static String speakThis="";
-    int count = 0;
+
+
     private static final int TF_OD_API_INPUT_SIZE = 416;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
     public  boolean IsDetectionFinish=false;
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
-    public String cmd2HelpInWait="Double tap for help?";
-    public boolean isHelpMenu = false;
+    public String cmd1Help="Application can perfome following functionalities: " +
+            "\n1. Objects you can detect are person, apple, mug, car, cat, bowl, watch, mobile phone, remote control and microwave oven" +
+            "\n2. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects" +
+            "\n3. You can search all objects by saying \"all\"  objects after taping on the screen" +
+            "\n4  You can turn on navigation mode by Saying navigation on or navigation off and stop to turn off detection";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
@@ -198,13 +202,19 @@ public static String speakThis="";
                 new Runnable() {
                     @Override
                     public void run() {
-
+                        //todo: Navigation implementation
                         LOGGER.i("Running detection on image " + currTimestamp);
                         final long startTime = SystemClock.uptimeMillis();
                         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
                         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
 
+                            trackI=trackI+1;
+                            if(trackI%20==0 && !isHelpMenu && !isSpeaking)
+                                speakThis=cmd0;
+
+
+                        Log.i("timeunit",String.valueOf(trackI));
                         if (mTTS.isSpeaking()){
                             isSpeaking=true;
                         }
@@ -212,6 +222,7 @@ public static String speakThis="";
                             isSpeaking=false;
 
                     }
+
 
 
                         cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
@@ -227,6 +238,11 @@ public static String speakThis="";
                                 minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
                                 break;
                         }
+                        //todo: Add Help menu having list of commands
+                        if(isHelpMenu && !isSpeaking){
+                            speakThis=cmd1Help;
+                        isHelpMenu=false;
+                        }
 
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
@@ -239,20 +255,19 @@ public static String speakThis="";
                             name=result.getTitle();
                             confi=result.getConfidence();
                             if (location != null && result.getConfidence() >= minimumConfidence  && name.matches(re) ) {
-//                                if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + name.split(" ")[0].toLowerCase()+ ".*")) {
-//
-//
-//                                    confi = result.getConfidence();
-//                                    speakThis =speakThis+" and "+ name + " and I am " + String.format("%.02f", confi * 100) + " percent Sure\n ";
-//
-//
-//                                }else if (isAllLooking){
-//                                    confi = result.getConfidence();
-//                                    isStopLooking = false;
-//
-//                                }
-                                i++;
-                                speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
+
+                                trackI=0;
+
+                                if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + name.split(" ")[0].toLowerCase()+ ".*")) {
+                                    i++;
+                              speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
+
+                               }else if (isAllLooking){
+                                   isStopLooking = false;
+                                    i++;
+                                    speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
+                             }
+
                                 canvas.drawRect(location, paint);
                                 confi=100*result.getConfidence();
                                 cropToFrameTransform.mapRect(location);
@@ -293,17 +308,6 @@ public static String speakThis="";
     }
 
     private void setSpeechButton(String name) {
-        // check voice text contain below strings
-        //              "Person";
-        //              "Car"
-        //            "Microwave oven";
-        //            "Mobile phone";
-        //            "Apple"
-        //            "Cat"
-        //            "Mug"
-        //            "Platter"
-        //            "Watch"
-        //            "Remote control"
 
 
         if (voice_text.toUpperCase(Locale.ROOT).contains("PHONE") || voice_text.toUpperCase(Locale.ROOT).contains("Mobile")){

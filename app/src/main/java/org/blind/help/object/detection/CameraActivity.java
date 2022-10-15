@@ -57,6 +57,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.blind.help.object.detection.env.DoubleClickListener;
 import org.blind.help.object.detection.env.ImageUtils;
 import org.blind.help.object.detection.env.Logger;
 import org.blind.help.object.detection.R;
@@ -70,6 +71,10 @@ public abstract class CameraActivity extends AppCompatActivity
   public TextToSpeech mTTS;
   private static final Logger LOGGER = new Logger();
 public boolean  isSpeaking=false;
+  public boolean isHelpMenu = false;
+  public int trackI=0;
+
+
   private static final int PERMISSIONS_REQUEST = 1;
 
   private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
@@ -92,7 +97,7 @@ public boolean  isSpeaking=false;
   private BottomSheetBehavior<LinearLayout> sheetBehavior;
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
-  public String cmd0="Tap on screen for search or double tap for the help?";
+  public String cmd0="Tap on screen search for object or double tap for the help?";
   protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
   protected ImageView bottomSheetArrowImageView;
   private ImageView plusImageView, minusImageView;
@@ -121,7 +126,7 @@ public boolean  isSpeaking=false;
          if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED){
            Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
          }else{
-           mTTS.speak("Tap on screen for search or double tap for the help?",TextToSpeech.QUEUE_FLUSH,null);
+           mTTS.speak("Tap on screen, then speak the object you are looking for or double tap for the help?",TextToSpeech.QUEUE_FLUSH,null);
          }
         }else {
           Toast.makeText(getApplicationContext(),"Initialization Failed",Toast.LENGTH_SHORT).show();
@@ -131,11 +136,31 @@ public boolean  isSpeaking=false;
     }, "com.google.android.tts");
 
 
-//     mTTS.speak("I am Here",TextToSpeech.QUEUE_FLUSH,null);
-    speechBtn.setOnClickListener(new View.OnClickListener(){
-
+//    speechBtn.setOnClickListener(new View.OnClickListener(){
+//
+//      @Override
+//      public void onClick(View v) {
+//        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
+//        try {
+//          startActivityForResult(intent,REQUEST_CODE_SPEECH_INPUT );//speech
+//        }catch (Exception e){
+//          LOGGER.e("Exception:",e.toString());
+//          Toast.makeText(getApplicationContext(), " "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
+//        }
+//      }
+//    });
+    speechBtn.setOnClickListener(new DoubleClickListener() {
       @Override
-      public void onClick(View v) {
+      public void onDoubleClick() {
+        trackI=0;
+        isHelpMenu=true;
+      }
+//TODO: Double CLick Implement
+      @Override
+      public void onSingleClick() {
+         trackI=0;
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
@@ -147,7 +172,6 @@ public boolean  isSpeaking=false;
         }
       }
     });
-
     if (hasPermission()) {
       setFragment();
     } else {
@@ -343,7 +367,7 @@ public boolean  isSpeaking=false;
           ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
           String text = result.get(0);
           if(text.matches(re)) {
-            voice_text = text;
+            voice_text = text+". Move your phone in the environment";
             speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
             isStopLooking=false;
             isAllLooking=false;
@@ -358,7 +382,7 @@ public boolean  isSpeaking=false;
             speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
           }else  if(text.matches(".*all.*")) {
-            voice_text = "Looking For All Objects";
+            voice_text = "Looking For All Objects, move your phone In the environment";
             mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
             voice_text="";
             isStopLooking=false;
