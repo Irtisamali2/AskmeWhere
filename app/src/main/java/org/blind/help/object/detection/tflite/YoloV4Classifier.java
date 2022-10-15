@@ -467,7 +467,7 @@ public class YoloV4Classifier implements Classifier {
                         Math.max(0, yPos - h / 2),
                         Math.min(bitmap.getWidth() - 1, xPos + w / 2),
                         Math.min(bitmap.getHeight() - 1, yPos + h / 2));
-                detections.add(new Recognition("" + i,labels.get(detectedClass)+" is "+distanceInInches+" away",score,rectF,detectedClass ));
+                detections.add(new Recognition("" + i,labels.get(detectedClass)+" about "+distanceInInches+" away",score,rectF,detectedClass ));
             }
         }
         return detections;

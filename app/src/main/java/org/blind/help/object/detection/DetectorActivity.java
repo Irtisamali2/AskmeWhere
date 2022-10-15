@@ -63,9 +63,10 @@ public static String speakThis="";
     private static final int TF_OD_API_INPUT_SIZE = 416;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
-
+    public  boolean IsDetectionFinish=false;
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
-
+    public String cmd2HelpInWait="Double tap for help?";
+    public boolean isHelpMenu = false;
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
@@ -211,24 +212,6 @@ public static String speakThis="";
                             isSpeaking=false;
 
                     }
-                        // get title from detector if it is not null and avoid null pointer exception
-
-                        if (results.size() > 0 && !isSpeaking) {
-
-                            Log.e("here", "size is greater than 0");
-                            Log.e("Checking", String.valueOf(voice_text.matches(".*mobile.*|.*phone.*")) + " " + voice_text);
-                            String title = results.get(0).getTitle();
-
-
-
-
-
-
-                        }
-                        // testing for crashing
-//                        speakThis = " and I am " + String.format("%.02f", confi * 100) + " percent Sure\n ";
-//
-
 
 
                         cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
@@ -247,26 +230,29 @@ public static String speakThis="";
 
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
-
-                        if(!speakThis.isEmpty() && !isSpeaking)
+                        int i=0;
+                        if(speakThis.isEmpty() && !isSpeaking && !isHelpMenu)
                         for (final Classifier.Recognition result : results) {
+                            IsDetectionFinish=false;
+
                             final RectF location = result.getLocation();
                             name=result.getTitle();
-
-                            if (location != null && result.getConfidence() >= minimumConfidence  ) {
-                                if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + name.split(" ")[0].toLowerCase()+ ".*")) {
-
-
-                                    confi = result.getConfidence();
-                                    speakThis =speakThis+" and "+ name + " and I am " + String.format("%.02f", confi * 100) + " percent Sure\n ";
-
-
-                                }else if (isAllLooking){
-                                    confi = result.getConfidence();
-                                    speakThis = name + " and I am " + String.format("%.02f", confi * 100) + " percent Sure";
-                                    isStopLooking = false;
-
-                                }
+                            confi=result.getConfidence();
+                            if (location != null && result.getConfidence() >= minimumConfidence  && name.matches(re) ) {
+//                                if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + name.split(" ")[0].toLowerCase()+ ".*")) {
+//
+//
+//                                    confi = result.getConfidence();
+//                                    speakThis =speakThis+" and "+ name + " and I am " + String.format("%.02f", confi * 100) + " percent Sure\n ";
+//
+//
+//                                }else if (isAllLooking){
+//                                    confi = result.getConfidence();
+//                                    isStopLooking = false;
+//
+//                                }
+                                i++;
+                                speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
                                 canvas.drawRect(location, paint);
                                 confi=100*result.getConfidence();
                                 cropToFrameTransform.mapRect(location);
@@ -276,6 +262,7 @@ public static String speakThis="";
 
 
                             }
+                            IsDetectionFinish=true;
                         }
 
                         tracker.trackResults(mappedRecognitions, currTimestamp);
@@ -287,11 +274,12 @@ public static String speakThis="";
                                 new Runnable() {
                                     @Override
                                     public void run() {
-                                       if(!speakThis.isEmpty()){
+                                       if(!speakThis.isEmpty() ){
                                           int rs= mTTS.speak(speakThis,TextToSpeech.QUEUE_FLUSH,null);
                                            speakThis="";
                                           if (mTTS.isSpeaking()){
                                               isSpeaking=true;
+
                                           }
                                           if (!mTTS.isSpeaking())
                                               isSpeaking=false;

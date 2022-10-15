@@ -92,7 +92,7 @@ public boolean  isSpeaking=false;
   private BottomSheetBehavior<LinearLayout> sheetBehavior;
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
-
+  public String cmd0="Tap on screen for search or double tap for the help?";
   protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
   protected ImageView bottomSheetArrowImageView;
   private ImageView plusImageView, minusImageView;
@@ -121,7 +121,7 @@ public boolean  isSpeaking=false;
          if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED){
            Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
          }else{
-           mTTS.speak("Press Button At Bottom And "+speechBtn.getText().toString()+"or Say Stop To stop the Search or Say All to look all objects",TextToSpeech.QUEUE_FLUSH,null);
+           mTTS.speak("Tap on screen for search or double tap for the help?",TextToSpeech.QUEUE_FLUSH,null);
          }
         }else {
           Toast.makeText(getApplicationContext(),"Initialization Failed",Toast.LENGTH_SHORT).show();
