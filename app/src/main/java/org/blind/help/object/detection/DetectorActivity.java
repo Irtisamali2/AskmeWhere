@@ -26,6 +26,9 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.media.MediaPlayer;
 import android.os.SystemClock;
@@ -59,7 +62,7 @@ import org.blind.help.object.detection.tracking.MultiBoxTracker;
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
 public static String speakThis="";
-
+public boolean navigation=false;
 
     private static final int TF_OD_API_INPUT_SIZE = 416;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
@@ -69,7 +72,7 @@ public static String speakThis="";
     public String cmd1Help="Application can perfome following functionalities: " +
             "\n1. Objects you can detect are person, apple, mug, car, cat, bowl, watch, mobile phone, remote control and microwave oven" +
             "\n2. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects" +
-            "\n3. You can search all objects by saying \"all\"  objects after taping on the screen" +
+            "\n3. You can search all objects by saying \"all\"  objects after tapping on the screen" +
             "\n4  You can turn on navigation mode by Saying navigation on or navigation off and stop to turn off detection";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
@@ -377,6 +380,11 @@ public static String speakThis="";
         return DESIRED_PREVIEW_SIZE;
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
     // Which detection model to use: by default uses Tensorflow Object Detection API frozen
     // checkpoints.
     private enum DetectorMode {
@@ -394,4 +402,6 @@ public static String speakThis="";
     protected void setNumThreads(final int numThreads) {
         runInBackground(() -> detector.setNumThreads(numThreads));
     }
+
+
 }

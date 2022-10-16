@@ -22,6 +22,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.hardware.TriggerEvent;
+import android.hardware.TriggerEventListener;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
@@ -42,6 +48,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
@@ -66,14 +73,15 @@ public abstract class CameraActivity extends AppCompatActivity
     implements OnImageAvailableListener,
         Camera.PreviewCallback,
         CompoundButton.OnCheckedChangeListener,
-        View.OnClickListener {
+        View.OnClickListener, SensorEventListener {
   public String voice_text = "";
   public TextToSpeech mTTS;
   private static final Logger LOGGER = new Logger();
 public boolean  isSpeaking=false;
   public boolean isHelpMenu = false;
   public int trackI=0;
-
+  private SensorManager sensorManager;
+  private Sensor sensor;
 
   private static final int PERMISSIONS_REQUEST = 1;
 
@@ -92,31 +100,25 @@ public boolean  isSpeaking=false;
   private Runnable imageConverter;
   public String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
 
-  private LinearLayout bottomSheetLayout;
-  private LinearLayout gestureLayout;
-  private BottomSheetBehavior<LinearLayout> sheetBehavior;
+
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
   public String cmd0="Tap on screen search for object or double tap for the help?";
-  protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
-  protected ImageView bottomSheetArrowImageView;
-  private ImageView plusImageView, minusImageView;
-  private SwitchCompat apiSwitchCompat;
-  private TextView threadsTextView;
+  public TriggerEventListener triggerEventListener;
+
   public int  REQUEST_CODE_SPEECH_INPUT=1000;
   Button speechBtn;
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
-
+// todo:added sensor
 
     LOGGER.d("onCreate " + this);
     super.onCreate(null);
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
     setContentView(R.layout.tfe_od_activity_camera);
-//    Toolbar toolbar = findViewById(R.id.toolbar);
-//    setSupportActionBar(toolbar);
-//    getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+
     speechBtn= findViewById(R.id.button);
     mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
       @Override
@@ -136,21 +138,6 @@ public boolean  isSpeaking=false;
     }, "com.google.android.tts");
 
 
-//    speechBtn.setOnClickListener(new View.OnClickListener(){
-//
-//      @Override
-//      public void onClick(View v) {
-//        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-//        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
-//        try {
-//          startActivityForResult(intent,REQUEST_CODE_SPEECH_INPUT );//speech
-//        }catch (Exception e){
-//          LOGGER.e("Exception:",e.toString());
-//          Toast.makeText(getApplicationContext(), " "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
-//        }
-//      }
-//    });
     speechBtn.setOnClickListener(new DoubleClickListener() {
       @Override
       public void onDoubleClick() {
@@ -177,6 +164,11 @@ public boolean  isSpeaking=false;
     } else {
       requestPermission();
     }
+
+
+
+    sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+    sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
 
   }
@@ -367,8 +359,8 @@ public boolean  isSpeaking=false;
           ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
           String text = result.get(0);
           if(text.matches(re)) {
-            voice_text = text+". Move your phone in the environment";
-            speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
+            voice_text = "Move your phone in the environment to find object";
+            mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
             isStopLooking=false;
             isAllLooking=false;
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
@@ -560,43 +552,12 @@ public boolean  isSpeaking=false;
   @Override
   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
     setUseNNAPI(isChecked);
-    if (isChecked) apiSwitchCompat.setText("NNAPI");
-    else apiSwitchCompat.setText("TFLITE");
   }
 
   @Override
   public void onClick(View v) {
-//    if (v.getId() == R.id.plus) {
-//      String threads = threadsTextView.getText().toString().trim();
-//      int numThreads = Integer.parseInt(threads);
-//      if (numThreads >= 9) return;
-//      numThreads++;
-//      threadsTextView.setText(String.valueOf(numThreads));
-//      setNumThreads(numThreads);
-//    } else if (v.getId() == R.id.minus) {
-//      String threads = threadsTextView.getText().toString().trim();
-//      int numThreads = Integer.parseInt(threads);
-//      if (numThreads == 1) {
-//        return;
-//      }
-//      numThreads--;
-//      threadsTextView.setText(String.valueOf(numThreads));
-//      setNumThreads(numThreads);
-//    }
+
   }
-
-//  protected void showFrameInfo(String frameInfo) {
-//    frameValueTextView.setText(frameInfo);
-//  }
-
-//  protected void showCropInfo(String cropInfo) {
-//    cropValueTextView.setText(cropInfo);
-//  }
-
-//  protected void showInference(String inferenceTime) {
-//    inferenceTimeTextView.setText(inferenceTime);
-//  }
-
   protected abstract void processImage();
 
   protected abstract void onPreviewSizeChosen(final Size size, final int rotation);
@@ -608,4 +569,10 @@ public boolean  isSpeaking=false;
   protected abstract void setNumThreads(int numThreads);
 
   protected abstract void setUseNNAPI(boolean isChecked);
+
+  @Override
+  public void onSensorChanged(SensorEvent event) {
+    Log.i("sensor checking", String.valueOf(event.sensor.getType()));
+    LOGGER.i("sensor","sensing");
+  }
 }
