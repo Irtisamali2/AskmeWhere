@@ -598,9 +598,14 @@ public abstract class CameraActivity extends AppCompatActivity
        xChange =tempx;
 //       else
 //         xChange=0;
-
+      double aX= event.values[0];
+      double aY= event.values[1];
+      //aZ= event.values[2];
+      double angle = Math.atan2(aX, aY)/(Math.PI/180);
 //      if(tempx>0.0001 || tempx> -0.0001 )
         yChange =tempy;
+      Log.i("onSensorChanged Angle: ", String.valueOf(angle));
+
 //      else
 //        yChange=0;
 

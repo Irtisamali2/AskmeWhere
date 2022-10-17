@@ -265,13 +265,11 @@ public boolean navigation=false;
                             name=result.getTitle();
                             confi=result.getConfidence();
                             if (location != null && result.getConfidence() >= minimumConfidence  && name.matches(re) ) {
-
                                 trackI=0;
-
-                                if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + name.split(" ")[0].toLowerCase()+ ".*")) {
+                                if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + name.split(" ")[0].toLowerCase()+ ".*"))
+                                {
                                     i++;
                               speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
-
                                }else if (isAllLooking){
                                    isStopLooking = false;
                                     i++;
