@@ -246,14 +246,21 @@ public boolean navigation=false;
                             speakThis=cmd1Help;
                         isHelpMenu=false;
                         }
+//                        movementAfterDetection=movementAfterDetection+xChange;
+//                        if(movementAfterDetection>2){
+//                            Log.i("Direction :","Left : "+movementAfterDetection);
+//                        }else if(movementAfterDetection<2)
+//                            Log.i("Direction :","Right : "+movementAfterDetection);
 
+
+                        Log.i("Movement detected:",String.valueOf(movementAfterDetection));
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
                         int i=0;
                         if(speakThis.isEmpty() && !isSpeaking && !isHelpMenu)
                         for (final Classifier.Recognition result : results) {
                             IsDetectionFinish=false;
-
+                            movementAfterDetection=0;
                             final RectF location = result.getLocation();
                             name=result.getTitle();
                             confi=result.getConfidence();

@@ -77,7 +77,8 @@ public abstract class CameraActivity extends AppCompatActivity
   public String voice_text = "";
   public TextToSpeech mTTS;
   private static final Logger LOGGER = new Logger();
-public boolean  isSpeaking=false;
+
+  public boolean  isSpeaking=false;
   public boolean isHelpMenu = false;
   public int trackI=0;
   private SensorManager sensorManager;
@@ -89,6 +90,8 @@ public boolean  isSpeaking=false;
   protected int previewWidth = 1080;
   protected int previewHeight = 2177;
   private boolean debug = false;
+  private final float[] rotationMatrix = new float[9];
+
   private Handler handler;
   private HandlerThread handlerThread;
   private boolean useCamera2API;
@@ -99,18 +102,21 @@ public boolean  isSpeaking=false;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
   public String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
-
-
+ public float xChange =0;
+ public float yChange = 0;
+ public float [] history = new float[2];
+ public String [] direction = {"NONE","NONE"};
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
   public String cmd0="Tap on screen search for object or double tap for the help?";
   public TriggerEventListener triggerEventListener;
-
+  public float movementAfterDetection=0;
   public int  REQUEST_CODE_SPEECH_INPUT=1000;
   Button speechBtn;
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
 // todo:added sensor
+    Log.i("triggerEvent","oncreate");
 
     LOGGER.d("onCreate " + this);
     super.onCreate(null);
@@ -167,8 +173,13 @@ public boolean  isSpeaking=false;
 
 
 
+
     sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-    sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+    sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+
+
+
 
 
   }
@@ -305,6 +316,7 @@ public boolean  isSpeaking=false;
   public synchronized void onResume() {
     LOGGER.d("onResume " + this);
     super.onResume();
+    sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
     handlerThread = new HandlerThread("inference");
     handlerThread.start();
@@ -572,7 +584,38 @@ public boolean  isSpeaking=false;
 
   @Override
   public void onSensorChanged(SensorEvent event) {
-    Log.i("sensor checking", String.valueOf(event.sensor.getType()));
+    Log.i("onSensorChanged: ",String.valueOf(event.values.length));
+    if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
+      Log.i("onSensorChanged: ", String.valueOf(event.values[0]+","+event.values[1]+","+event.values[2]));
+//      System.arraycopy(event.values, 0, rotationMatrix,
+//              0, rotationMatrix.length);
+      float tempx=history[0] - event.values[0];
+      float tempy = history[1] - event.values[1];
+
+      Log.i("onSensorChanged X: ", String.valueOf(xChange+" , error,"+ tempx/(tempx-xChange)*100));
+
+//      if(tempx>0.0001 || tempx> -0.0001 )
+       xChange =tempx;
+//       else
+//         xChange=0;
+
+//      if(tempx>0.0001 || tempx> -0.0001 )
+        yChange =tempy;
+//      else
+//        yChange=0;
+
+
+      history[0] = event.values[0];
+      history[1] = event.values[1];
+
+      if (xChange > 2){
+        direction[0] = "LEFT";
+      }
+      else if (xChange < -2){
+        direction[0] = "RIGHT";
+      }
+
+    }
     LOGGER.i("sensor","sensing");
   }
 }
