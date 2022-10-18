@@ -64,21 +64,26 @@ public interface Classifier {
         private RectF location;
 
         private int detectedClass;
+        public String className;
 
         public Recognition(
-                final String id, final String title, final Float confidence, final RectF location) {
+                final String id, final String title, final Float confidence, final RectF location, final String className
+        ) {
             this.id = id;
             this.title = title;
             this.confidence = confidence;
             this.location = location;
+          this.className= className;
+
         }
 
-        public Recognition(final String id, final String title, final Float confidence, final RectF location, int detectedClass) {
+        public Recognition(final String id, final String title, final Float confidence, final RectF location, int detectedClass,String className) {
             this.id = id;
             this.title = title;
             this.confidence = confidence;
             this.location = location;
             this.detectedClass = detectedClass;
+            this.className= className;
         }
 
         public String getId() {

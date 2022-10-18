@@ -147,13 +147,18 @@ public abstract class CameraActivity extends AppCompatActivity
     speechBtn.setOnClickListener(new DoubleClickListener() {
       @Override
       public void onDoubleClick() {
+        mTTS.stop();
+        isSpeaking=false;
+
         trackI=0;
         isHelpMenu=true;
       }
 //TODO: Double CLick Implement
       @Override
       public void onSingleClick() {
-         trackI=0;
+        mTTS.stop();
+        isSpeaking=false;
+        trackI=0;
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
@@ -371,24 +376,22 @@ public abstract class CameraActivity extends AppCompatActivity
           ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
           String text = result.get(0);
           if(text.matches(re)) {
-            voice_text = "Move your phone in the environment to find object";
+            voice_text ="Move your phone in the environment to find "+result.get(0);
             mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
             isStopLooking=false;
             isAllLooking=false;
-            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
           }else  if(text.matches(".*stop.*")) {
-            voice_text = "Object Detection Has Been Stopped";
+            voice_text = "Object Detection Has Been Stop";
             mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
             voice_text="";
 
             isStopLooking=true;
             isAllLooking=false;
-            speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
-            Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+
           }else  if(text.matches(".*all.*")) {
-            voice_text = "Looking For All Objects, move your phone In the environment";
+            voice_text = "Looking for all objects, move your phone In the environment";
             mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
-            voice_text="";
+//            voice_text=;
             isStopLooking=false;
             isAllLooking=true;
             speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);

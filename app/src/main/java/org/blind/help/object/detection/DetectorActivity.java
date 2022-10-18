@@ -63,6 +63,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     private static final Logger LOGGER = new Logger();
 public static String speakThis="";
 public boolean navigation=false;
+    public String searchingClass="";
 
     private static final int TF_OD_API_INPUT_SIZE = 416;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
@@ -72,8 +73,7 @@ public boolean navigation=false;
     public String cmd1Help="Application can perfome following functionalities: " +
             "\n1. Objects you can detect are person, apple, mug, car, cat, bowl, watch, mobile phone, remote control and microwave oven" +
             "\n2. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects" +
-            "\n3. You can search all objects by saying \"all\"  objects after tapping on the screen" +
-            "\n4  You can turn on navigation mode by Saying navigation on or navigation off and stop to turn off detection";
+            "\n3. You can search all objects by saying \"all\"  objects after tapping on the screen";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
@@ -211,11 +211,11 @@ public boolean navigation=false;
                         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
                         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
 
-
                             trackI=trackI+1;
-                            if(trackI%20==0 && !isHelpMenu && !isSpeaking)
-                                speakThis=cmd0;
-
+                            if(trackI%20==0 && !isHelpMenu && !isSpeaking) {
+                                if(!results.isEmpty())searchingClass=results.get(0).className;
+                                speakThis = results.isEmpty() ? cmd0 : cmd0 + " or tap and say " + searchingClass +" for searching "+searchingClass;
+                            }
 
                         Log.i("timeunit",String.valueOf(trackI));
                         if (mTTS.isSpeaking()){
@@ -243,7 +243,13 @@ public boolean navigation=false;
                         }
                         //todo: Add Help menu having list of commands
                         if(isHelpMenu && !isSpeaking){
-                            speakThis=cmd1Help;
+
+                            if(!results.isEmpty())
+                               searchingClass= results.get(0).className;
+
+
+                                speakThis=cmd1Help;
+
                         isHelpMenu=false;
                         }
 //                        movementAfterDetection=movementAfterDetection+xChange;
@@ -257,24 +263,27 @@ public boolean navigation=false;
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
                         int i=0;
-                        if(speakThis.isEmpty() && !isSpeaking && !isHelpMenu)
+
+                       Log.i("voice Text","voice: "+voice_text+",match");
+                        if(!isSpeaking && !isHelpMenu && voice_text.toLowerCase(Locale.ROOT).matches(re+"|.*stop.*|.*all.*"))
                         for (final Classifier.Recognition result : results) {
-                            IsDetectionFinish=false;
                             movementAfterDetection=0;
                             final RectF location = result.getLocation();
                             name=result.getTitle();
                             confi=result.getConfidence();
-                            if (location != null && result.getConfidence() >= minimumConfidence  && name.matches(re) ) {
+                            if (location != null && result.getConfidence() >= minimumConfidence  ) {
                                 trackI=0;
-                                if (!isAllLooking&&!isStopLooking&&voice_text.matches(re) && voice_text.matches(".*" + name.split(" ")[0].toLowerCase()+ ".*"))
+                                if (!isAllLooking && !isStopLooking && voice_text.matches(re) && name.matches(re))
                                 {
+
                                     i++;
                               speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
-                               }else if (isAllLooking){
-                                   isStopLooking = false;
+                               }else if (isAllLooking && name.matches(re)){
                                     i++;
                                     speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
-                             }
+                             }else {
+                                    continue;
+                                }
 
                                 canvas.drawRect(location, paint);
                                 confi=100*result.getConfidence();
@@ -315,52 +324,7 @@ public boolean navigation=false;
                 });
     }
 
-    private void setSpeechButton(String name) {
 
-
-        if (voice_text.toUpperCase(Locale.ROOT).contains("PHONE") || voice_text.toUpperCase(Locale.ROOT).contains("Mobile")){
-            Log.e("CHECK", "phone");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else  if (voice_text.toUpperCase(Locale.ROOT).contains("PERSON")){
-            Log.e("CHECK", "PERSON");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else  if (voice_text.toUpperCase(Locale.ROOT).contains("Microwave".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "Microwave");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Remote".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "Remote");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Watch".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "\"Watch\"");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Mug".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "\"Mug\"");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Apple".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "\"Mug\"");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("car".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "\"car\"");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }
-
-    }
     public static int getScreenWidth() {
         Log.i("wxh",""+Resources.getSystem().getDisplayMetrics().widthPixels+"x"+Resources.getSystem().getDisplayMetrics().heightPixels);
         return Resources.getSystem().getDisplayMetrics().widthPixels;
