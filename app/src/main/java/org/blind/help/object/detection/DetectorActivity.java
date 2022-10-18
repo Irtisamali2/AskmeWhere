@@ -210,7 +210,7 @@ public boolean navigation=false;
                         final long startTime = SystemClock.uptimeMillis();
                         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
                         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-                        if(!results.isEmpty())searchingClass=results.get(0).className;
+                        if(!results.isEmpty() && results.get(0).getTitle().toLowerCase(Locale.ROOT).matches("re"))searchingClass=results.get(0).className;
 
                             trackI=trackI+1;
                             if(trackI%20==0 && !isHelpMenu && !isSpeaking) {
