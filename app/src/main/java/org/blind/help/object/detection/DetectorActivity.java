@@ -212,6 +212,7 @@ public boolean navigation=false;
                         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
                         if(!results.isEmpty() && results.get(0).getTitle().toLowerCase(Locale.ROOT).matches(re))searchingClass=results.get(0).className;
 
+
                             trackI=trackI+1;
                             if(trackI%20==0 && !isHelpMenu && !isSpeaking) {
 
@@ -265,7 +266,7 @@ public boolean navigation=false;
                                 new LinkedList<Classifier.Recognition>();
                         int i=0;
 
-                       Log.i("voice Text","voice: "+voice_text+",match");
+                       Log.i("voice Text","voice: "+searchingClass);
                         if(!isSpeaking && !isHelpMenu && voice_text.toLowerCase(Locale.ROOT).matches(re+"|.*stop.*|.*all.*"))
                         for (final Classifier.Recognition result : results) {
                             movementAfterDetection=0;
