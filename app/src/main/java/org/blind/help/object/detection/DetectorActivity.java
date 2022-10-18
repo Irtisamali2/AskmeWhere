@@ -210,11 +210,12 @@ public boolean navigation=false;
                         final long startTime = SystemClock.uptimeMillis();
                         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
                         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-                        if(!results.isEmpty() && results.get(0).getTitle().toLowerCase(Locale.ROOT).matches("re"))searchingClass=results.get(0).className;
+                        if(!results.isEmpty() && results.get(0).getTitle().toLowerCase(Locale.ROOT).matches(re))searchingClass=results.get(0).className;
 
                             trackI=trackI+1;
                             if(trackI%20==0 && !isHelpMenu && !isSpeaking) {
-                                speakThis = results.isEmpty() ? cmd0 : cmd0 + " or tap and say " + searchingClass +" for searching "+searchingClass;
+
+                                speakThis = searchingClass.isEmpty()? cmd0 : cmd0 + " or tap and say " + searchingClass +" for searching "+searchingClass;
                             }
 
                         Log.i("timeunit",String.valueOf(trackI));
