@@ -101,7 +101,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private int yRowStride;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
-  public String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*|.*bottle.*|.*chair.*|.*toilet.*|.*spoon.*|.*toaster.*|.*dog.*|.*bus.*|.*table.*|.*laptop.*";
+  public String re = ".*apple.*|.*platter.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*watch.*|.*bottle.*|.*chair.*|.*toilet.*|.*spoon.*|.*toaster.*|.*fork.*|.*bus.*|.*table.*|.*laptop.*";
  public float xChange =0;
  public float yChange = 0;
  public float [] history = new float[2];
@@ -130,6 +130,7 @@ public abstract class CameraActivity extends AppCompatActivity
       @Override
       public void onInit(int status) {
         if(status==TextToSpeech.SUCCESS){
+          mTTS.setSpeechRate(0.5f);
          int rs= mTTS.setLanguage(Locale.ENGLISH);
          if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED){
            Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();

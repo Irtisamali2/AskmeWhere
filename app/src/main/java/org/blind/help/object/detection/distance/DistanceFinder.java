@@ -6,16 +6,29 @@ public class DistanceFinder {
     //create array list of DistanceModel objects person, car, microwave, cell phone, apple,cat,mug, platter, watch, AND remote
     public  static ArrayList<String> _class = new ArrayList<String>(){
         {
+
             add("person");
             add("car");
             add("microwave oven");
             add("mobile phone");
             add("apple");
-            add("Cat");
+            add("cat");
             add("mug");
             add("bowl");
             add("watch");
             add("remote control");
+            //new
+            add("toilet");
+            add("spoon");
+            add("chair");
+            add("bottle");
+            add("bus");
+            add("toaster");
+            add("fork");
+            add("table");
+            add("laptop");
+            add("platter");
+
         }
     };
     public static String getDistanceInInches(String objectName, float widthInPixels){
@@ -38,9 +51,38 @@ public class DistanceFinder {
                     return String.format("%.02f",new DistanceModel("mug", 147.606f, 2.99213f, 44.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
                 case "bowl":
                     return String.format("%.02f",new DistanceModel("platter", 147.606f, 9.75f, 147.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+                case "platter":
+                    return String.format("%.02f",new DistanceModel("platter", 147.606f, 9.75f, 147.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
                 case "watch":
                     return String.format("%.02f",new DistanceModel("watch", 147.606f, 1.65354f, 25.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
                 case "remote control":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+                    //changes needed
+                case "spoon":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+
+                case "chair":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+
+                case "toilet":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+
+                case "bottle":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+
+                case "bus":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+
+                case "fork":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+
+                case "toaster":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+
+                case "table":
+                    return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
+
+                case "laptop":
                     return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
 
 
