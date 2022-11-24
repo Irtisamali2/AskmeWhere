@@ -273,14 +273,14 @@ public boolean navigation=false;
                             final RectF location = result.getLocation();
                             name=result.getTitle();
                             confi=result.getConfidence();
-                            if (location != null && result.getConfidence() >= minimumConfidence  ) {
+                            if (location != null && result.getConfidence() >= minimumConfidence  && name.matches(re) ) {
                                 trackI=0;
-                                if (!isAllLooking && !isStopLooking && voice_text.matches(re) && name.matches(re))
+                                if (!isAllLooking && !isStopLooking && voice_text.toLowerCase(Locale.ROOT).matches(re) && name.toLowerCase(Locale.ROOT).matches(re))
                                 {
 
                                     i++;
                               speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
-                               }else if (isAllLooking && name.matches(re)){
+                               }else if (isAllLooking){
                                     i++;
                                     speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
                              }else {

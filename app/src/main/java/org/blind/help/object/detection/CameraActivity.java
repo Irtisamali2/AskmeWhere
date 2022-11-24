@@ -101,7 +101,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private int yRowStride;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
-  public String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
+  public String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*|.*bottle.*|.*chair.*|.*toilet.*|.*spoon.*|.*toaster.*|.*dog.*|.*bus.*|.*table.*|.*laptop.*";
  public float xChange =0;
  public float yChange = 0;
  public float [] history = new float[2];
@@ -384,22 +384,20 @@ public abstract class CameraActivity extends AppCompatActivity
             voice_text = "Object Detection Has Been Stop";
             mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
             voice_text="";
-
             isStopLooking=true;
             isAllLooking=false;
 
           }else  if(text.matches(".*all.*")) {
             voice_text = "Looking for all objects, move your phone In the environment";
             mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
-//            voice_text=;
             isStopLooking=false;
             isAllLooking=true;
-            speechBtn.setText(getString(R.string.please_speak_about_the_object_you_are_looking_for) + "\n" + text);
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
           }else{
-            isStopLooking=true;
+            isStopLooking=false;
             isAllLooking=false;
             mTTS.speak("I am not sure what are you looking for try different object",TextToSpeech.QUEUE_FLUSH,null);
+            voice_text="";
 
           }
         }

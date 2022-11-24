@@ -63,7 +63,7 @@ toilet
 tvmonitor
 laptop
 mouse
-remote control
+remote
 keyboard
 mobile phone
 microwave oven
