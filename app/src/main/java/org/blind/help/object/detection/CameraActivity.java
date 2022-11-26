@@ -109,6 +109,12 @@ public abstract class CameraActivity extends AppCompatActivity
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
   public String cmd0="Tap on screen search for object or double tap for the help?";
+  public String cmdWelcome=  "Welcome to blind helper. You can use following command in this app.\n1. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
+          "\n2. You can search all objects by saying \"all\"  objects after tapping on the screen\n"+
+          "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?"+
+          "\n4. It can detect following objects.\n1 Person.\n2 Apple\n3 Mug.\n4 Car.\n5 " +
+          "Cat.\n6 bowl.\n/7 watch.\n8 mobile phone.\n9 remote control.\n10 microwave oven.\n" +
+          "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 bus.\n20 platter.\n";
   public TriggerEventListener triggerEventListener;
   public float movementAfterDetection=0;
   public int  REQUEST_CODE_SPEECH_INPUT=1000;
@@ -135,7 +141,7 @@ public abstract class CameraActivity extends AppCompatActivity
          if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED){
            Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
          }else{
-           mTTS.speak("Tap on screen, then speak the object you are looking for or double tap for the help?",TextToSpeech.QUEUE_FLUSH,null);
+           mTTS.speak(cmdWelcome,TextToSpeech.QUEUE_FLUSH,null);
          }
         }else {
           Toast.makeText(getApplicationContext(),"Initialization Failed",Toast.LENGTH_SHORT).show();
@@ -144,7 +150,17 @@ public abstract class CameraActivity extends AppCompatActivity
       }
     }, "com.google.android.tts");
 
+    speechBtn.setOnLongClickListener(new View.OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        mTTS.stop();
+        isSpeaking=false;
 
+        trackI=0;
+        isHelpMenu=true;
+        return false;
+      }
+    });
     speechBtn.setOnClickListener(new DoubleClickListener() {
       @Override
       public void onDoubleClick() {
@@ -375,10 +391,13 @@ public abstract class CameraActivity extends AppCompatActivity
       case 1000:
         if (resultCode == RESULT_OK && null != data) {
           ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+
           String text = result.get(0);
+          Log.i("rs",text);
           if(text.matches(re)) {
-            voice_text ="Move your phone in the environment to find "+result.get(0);
+            voice_text ="Move your phone in the environment to find object?";
             mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
+            voice_text=result.get(0);
             isStopLooking=false;
             isAllLooking=false;
           }else  if(text.matches(".*stop.*")) {
@@ -388,7 +407,7 @@ public abstract class CameraActivity extends AppCompatActivity
             isStopLooking=true;
             isAllLooking=false;
 
-          }else  if(text.matches(".*all.*")) {
+          }else  if(text.matches(".* all.*")) {
             voice_text = "Looking for all objects, move your phone In the environment";
             mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
             isStopLooking=false;

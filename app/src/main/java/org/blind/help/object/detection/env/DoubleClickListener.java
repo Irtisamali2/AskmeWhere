@@ -5,7 +5,7 @@ import android.os.SystemClock;
 import android.view.View;
 
 public abstract class DoubleClickListener implements View.OnClickListener {
-    private static final long DEFAULT_QUALIFICATION_SPAN = 200;
+    private static final long DEFAULT_QUALIFICATION_SPAN = 300;
     private boolean isSingleEvent;
     private long doubleClickQualificationSpanInMillis;
     private long timestampLastClick;

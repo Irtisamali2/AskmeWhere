@@ -70,10 +70,10 @@ public boolean navigation=false;
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
     public  boolean IsDetectionFinish=false;
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
-    public String cmd1Help="Application can perfome following functionalities: " +
-            "\n1. Objects you can detect are person, apple, mug, car, cat, bowl, watch, mobile phone, remote control and microwave oven" +
-            "\n2. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects" +
-            "\n3. You can search all objects by saying \"all\"  objects after tapping on the screen";
+    public String cmd1Help="App can perfome following functionalities:\n" +
+            "It can detect following objects.\n1 Person.\n2 Apple\n3 Mug.\n4 Car.\n5 " +
+            "Cat.\n6 bowl.\n/7 watch.\n8 mobile phone.\n9 remote control.\n10 microwave oven.\n" +
+            "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 bus.\n20 platter.\n";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
@@ -217,6 +217,7 @@ public boolean navigation=false;
                             if(trackI%20==0 && !isHelpMenu && !isSpeaking) {
 
                                 speakThis = searchingClass.isEmpty()? cmd0 : cmd0 + " or tap and say " + searchingClass +" for searching "+searchingClass;
+                            trackI=2;
                             }
 
                         Log.i("timeunit",String.valueOf(trackI));
@@ -261,28 +262,32 @@ public boolean navigation=false;
 //                            Log.i("Direction :","Right : "+movementAfterDetection);
 
 
-                        Log.i("Movement detected:",String.valueOf(movementAfterDetection));
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
                         int i=0;
 
-                       Log.i("voice Text","voice: "+searchingClass);
                         if(!isSpeaking && !isHelpMenu && voice_text.toLowerCase(Locale.ROOT).matches(re+"|.*stop.*|.*all.*"))
                         for (final Classifier.Recognition result : results) {
                             movementAfterDetection=0;
                             final RectF location = result.getLocation();
+
                             name=result.getTitle();
                             confi=result.getConfidence();
-                            if (location != null && result.getConfidence() >= minimumConfidence  && name.matches(re) ) {
+                            String className= result.className;
+                            Log.i("loop: Class Name: ",className);
+                            Log.i("loop: voice text: ",className);
+                            Log.i("loop: condition 1: ",String.valueOf(location != null && result.getConfidence() >= minimumConfidence  && name.toLowerCase(Locale.ROOT).matches(re)));
+
+                            if (location != null && result.getConfidence() >= minimumConfidence  && name.toLowerCase(Locale.ROOT).matches(re) ) {
                                 trackI=0;
-                                if (!isAllLooking && !isStopLooking && voice_text.toLowerCase(Locale.ROOT).matches(re) && name.toLowerCase(Locale.ROOT).matches(re))
+                                if (!isAllLooking && !isStopLooking && voice_text.toLowerCase(Locale.ROOT).contains(className) )
                                 {
 
                                     i++;
-                              speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
+                              speakThis = speakThis+ "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence";
                                }else if (isAllLooking){
                                     i++;
-                                    speakThis =  "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, "+speakThis;
+                                    speakThis = speakThis+"object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, ";
                              }else {
                                     continue;
                                 }
