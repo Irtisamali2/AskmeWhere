@@ -101,7 +101,7 @@ public abstract class CameraActivity extends AppCompatActivity
   private int yRowStride;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
-  public String re = ".*apple.*|.*platter.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*watch.*|.*bottle.*|.*chair.*|.*toilet.*|.*spoon.*|.*toaster.*|.*fork.*|.*suitcase.*|.*table.*|.*laptop.*";
+  public String re = ".*apple.*|.*platter.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*watch.*|.*bottle.*|.*chair.*|.*toilet.*|.*spoon.*|.*toaster.*|.*fork.*|.*suitcase  .*|.*table.*|.*laptop.*";
  public float xChange =0;
  public float yChange = 0;
  public float [] history = new float[2];
