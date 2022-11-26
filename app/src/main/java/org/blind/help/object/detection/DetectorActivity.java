@@ -73,7 +73,7 @@ public boolean navigation=false;
     public String cmd1Help="App can perfome following functionalities:\n" +
             "It can detect following objects.\n1 Person.\n2 Apple\n3 Mug.\n4 Car.\n5 " +
             "Cat.\n6 bowl.\n/7 watch.\n8 mobile phone.\n9 remote control.\n10 microwave oven.\n" +
-            "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 bus.\n20 platter.\n";
+            "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 suitcase.\n20 platter.\n";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
@@ -284,10 +284,10 @@ public boolean navigation=false;
                                 {
 
                                     i++;
-                              speakThis = speakThis+ "object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence";
+                              speakThis = speakThis+ "\nobject"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence.\n";
                                }else if (isAllLooking){
                                     i++;
-                                    speakThis = speakThis+"object"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence, ";
+                                    speakThis = speakThis+"\nobject"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence.\n";
                              }else {
                                     continue;
                                 }

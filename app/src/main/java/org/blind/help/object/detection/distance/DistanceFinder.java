@@ -22,7 +22,7 @@ public class DistanceFinder {
             add("spoon");
             add("chair");
             add("bottle");
-            add("bus");
+            add("suitcase");
             add("toaster");
             add("fork");
             add("table");
@@ -70,7 +70,7 @@ public class DistanceFinder {
                 case "bottle":
                     return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
 
-                case "bus":
+                case "suitcase":
                     return String.format("%.02f",new DistanceModel("remote", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInches(widthInPixels)/10) + " inches";
 
                 case "fork":
