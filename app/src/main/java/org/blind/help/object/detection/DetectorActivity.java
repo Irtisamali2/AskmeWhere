@@ -205,6 +205,8 @@ public boolean navigation=false;
                 new Runnable() {
                     @Override
                     public void run() {
+                        Log.i("focal",String.valueOf(DetectorActivity.focal));
+
                         //todo: Navigation implementation
                         LOGGER.i("Running detection on image " + currTimestamp);
                         final long startTime = SystemClock.uptimeMillis();

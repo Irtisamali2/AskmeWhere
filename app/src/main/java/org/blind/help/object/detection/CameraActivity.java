@@ -513,7 +513,7 @@ public  static SizeF cameraPhysicalSize;
                     characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
         LOGGER.i("Camera API lv2?: %s", useCamera2API);
        cameraPhysicalSize= characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
-        focal =characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0];
+        focal =characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0]/25.4;
         return cameraId;
       }
     } catch (CameraAccessException e) {

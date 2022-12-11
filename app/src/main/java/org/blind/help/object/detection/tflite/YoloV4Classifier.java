@@ -332,7 +332,6 @@ public class YoloV4Classifier implements Classifier {
 //                float w_pixel = Math.min(bitmap.getWidth() - 1, xPos + w / 2)-Math.max(0, xPos - w / 2);
 
                 Log.i("pixel",String.valueOf(w_pixel));
-                Log.i("focal",String.valueOf(DetectorActivity.focal));
 
                 //
                 String distanceInInches = DistanceFinder.getDistanceInInches(labels.get(detectedClass),w_pixel);
