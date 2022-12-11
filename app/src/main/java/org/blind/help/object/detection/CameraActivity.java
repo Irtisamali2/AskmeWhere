@@ -50,6 +50,7 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
+import android.util.SizeF;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
@@ -83,7 +84,8 @@ public abstract class CameraActivity extends AppCompatActivity
   public int trackI=0;
   private SensorManager sensorManager;
   private Sensor sensor;
-
+  public static double focal=0.0d;
+public  static SizeF cameraPhysicalSize;
   private static final int PERMISSIONS_REQUEST = 1;
 
   private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
@@ -483,6 +485,7 @@ public abstract class CameraActivity extends AppCompatActivity
 
   private String chooseCamera() {
     final CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
     try {
       for (final String cameraId : manager.getCameraIdList()) {
         final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
@@ -500,6 +503,7 @@ public abstract class CameraActivity extends AppCompatActivity
           continue;
         }
 
+
         // Fallback to camera1 API for internal cameras that don't have full support.
         // This should help with legacy situations where using the camera2 API causes
         // distorted or otherwise broken previews.
@@ -508,6 +512,8 @@ public abstract class CameraActivity extends AppCompatActivity
                 || isHardwareLevelSupported(
                     characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
         LOGGER.i("Camera API lv2?: %s", useCamera2API);
+       cameraPhysicalSize= characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
+        focal =characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0];
         return cameraId;
       }
     } catch (CameraAccessException e) {
