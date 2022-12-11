@@ -334,7 +334,7 @@ public class YoloV4Classifier implements Classifier {
                 Log.i("pixel",String.valueOf(w_pixel));
 
                 //
-                String distanceInInches = DistanceFinder.getDistanceInInches(labels.get(detectedClass),w_pixel);
+                String distanceInInches = DistanceFinder.getDistanceInInchesUsingFocal(labels.get(detectedClass),w_pixel);
                 Log.i("pixel to distance",String.valueOf(distanceInInches));
                 // getLable
 

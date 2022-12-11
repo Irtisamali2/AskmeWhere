@@ -111,12 +111,12 @@ public  static SizeF cameraPhysicalSize;
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
   public String cmd0="Tap on screen search for object or double tap for the help?";
-  public String cmdWelcome=  "Welcome to blind helper. You can use following command in this app.\n1. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
+  public CharSequence cmdWelcome=  "\"Welcome, You can use following command in this app.\n1. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
           "\n2. You can search all objects by saying \"all\"  objects after tapping on the screen\n"+
           "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?"+
           "\n4. It can detect following objects.\n1 Person.\n2 Apple\n3 Mug.\n4 Car.\n5 " +
           "Cat.\n6 bowl.\n/7 watch.\n8 mobile phone.\n9 remote control.\n10 microwave oven.\n" +
-          "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 suitcase.\n20 platter.\n";
+          "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 suitcase.\n20 platter.\n\"";
   public TriggerEventListener triggerEventListener;
   public float movementAfterDetection=0;
   public int  REQUEST_CODE_SPEECH_INPUT=1000;
@@ -128,29 +128,32 @@ public  static SizeF cameraPhysicalSize;
 
     LOGGER.d("onCreate " + this);
     super.onCreate(null);
-    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    setContentView(R.layout.tfe_od_activity_camera);
-
-
-
-    speechBtn= findViewById(R.id.button);
-    mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+    mTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
       @Override
       public void onInit(int status) {
         if(status==TextToSpeech.SUCCESS){
-          mTTS.setSpeechRate(0.5f);
-         int rs= mTTS.setLanguage(Locale.ENGLISH);
-         if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED){
-           Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
-         }else{
-           mTTS.speak(cmdWelcome,TextToSpeech.QUEUE_FLUSH,null);
-         }
+          int rs2=mTTS.setSpeechRate(0.5f);
+          int rs= mTTS.setLanguage(Locale.US);
+          mTTS.speak(cmdWelcome,TextToSpeech.QUEUE_FLUSH,null,null);
+
+          if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED ||rs2==TextToSpeech.ERROR){
+            Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
+          }else{
+//           mTTS.sp(String.valueOf(cmdWelcome),TextToSpeech.QUEUE_FLUSH,null);
+
+          }
         }else {
           Toast.makeText(getApplicationContext(),"Initialization Failed",Toast.LENGTH_SHORT).show();
 
         }
       }
     }, "com.google.android.tts");
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    setContentView(R.layout.tfe_od_activity_camera);
+
+
+
+    speechBtn= findViewById(R.id.button);
 
     speechBtn.setOnLongClickListener(new View.OnLongClickListener() {
       @Override

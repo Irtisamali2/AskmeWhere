@@ -216,7 +216,7 @@ public boolean navigation=false;
 
 
                             trackI=trackI+1;
-                            if(trackI%20==0 && !isHelpMenu && !isSpeaking) {
+                            if(trackI>=25 && !isHelpMenu && !isSpeaking) {
 
                                 speakThis = searchingClass.isEmpty()? cmd0 : cmd0 + " or tap and say " + searchingClass +" for searching "+searchingClass;
                             trackI=2;
@@ -224,6 +224,7 @@ public boolean navigation=false;
 
                         Log.i("timeunit",String.valueOf(trackI));
                         if (mTTS.isSpeaking()){
+                            trackI=0;
                             isSpeaking=true;
                         }
                         if (!mTTS.isSpeaking()){
