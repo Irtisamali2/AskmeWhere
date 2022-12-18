@@ -26,21 +26,19 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
-import android.media.MediaPlayer;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
-import org.blind.help.object.detection.R;
 import org.blind.help.object.detection.customview.OverlayView;
 import org.blind.help.object.detection.customview.OverlayView.DrawCallback;
 import org.blind.help.object.detection.env.BorderedText;
@@ -57,9 +55,8 @@ import org.blind.help.object.detection.tracking.MultiBoxTracker;
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
 public static String speakThis="";
-    int count = 0;
     private static final int TF_OD_API_INPUT_SIZE = 416;
-    private static final boolean TF_OD_API_IS_QUANTIZED = false;
+    private static final boolean TF_OD_API_IS_QUANTIZED = true;
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
 
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
@@ -80,7 +77,6 @@ public static String speakThis="";
     private Bitmap rgbFrameBitmap = null;
     private Bitmap croppedBitmap = null;
     private Bitmap cropCopyBitmap = null;
-    private long waitingTime = 0;
     private boolean computingDetection = false;
 
     private long timestamp = 0;
@@ -93,7 +89,6 @@ public static String speakThis="";
     private BorderedText borderedText;
     String name;
     float confi;
-    TextToSpeech texttospeach;
 
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -118,16 +113,7 @@ public static String speakThis="";
                             TF_OD_API_LABELS_FILE,
                             TF_OD_API_IS_QUANTIZED);
 
-            // get title from detector
 
-
-
-//            detector = TFLiteObjectDetectionAPIModel.create(
-//                    getAssets(),
-//                    TF_OD_API_MODEL_FILE,
-//                    TF_OD_API_LABELS_FILE,
-//                    TF_OD_API_INPUT_SIZE,
-//                    TF_OD_API_IS_QUANTIZED);
             cropSize = TF_OD_API_INPUT_SIZE;
         } catch (final IOException e) {
             e.printStackTrace();
@@ -175,17 +161,7 @@ public static String speakThis="";
 
     @Override
     protected void processImage() {
-//        texttospeach = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-//            @Override
-//            public void onInit(int i) {
-//                if(i==TextToSpeech.SUCCESS){
-//                    int lang=texttospeach.setLanguage(Locale.ENGLISH);
-//
-//                }
-//            }
-//        });
-//      mp  = MediaPlayer.create(this, R.raw.person);
-//      mp1  = MediaPlayer.create(this, R.raw.mobile);
+
         ++timestamp;
         final long currTimestamp = timestamp;
         trackingOverlay.postInvalidate();
@@ -215,8 +191,7 @@ public static String speakThis="";
                     @Override
                     public void run() {
 //                        /*testing*/
-//                        isStopLooking=false;
-//                        isAllLooking=true;
+
                         /**********testing*************/
                         LOGGER.i("Running detection on image " + currTimestamp);
                         final long startTime = SystemClock.uptimeMillis();
@@ -250,8 +225,7 @@ public static String speakThis="";
                                 Log.e("CHECK", "run: " + title);
                                 Log.e("CHECK", "run: " + confi);
 
-//                            Log.e("CHECK", "run: " + btnText
-//                            );
+
 
                             }else if (isAllLooking){
                                 confi = results.get(0).getConfidence();
@@ -299,27 +273,11 @@ public static String speakThis="";
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
 
-//                                try {
-//                                    if(result.getTitle().equalsIgnoreCase("Mobile phone")){
-//                                        mp1.start();
-//
-//                                    }else if(result.getTitle().equalsIgnoreCase("Person") ){
-//                                        mp.start();
-//
-//                                    }
-//                                    else{
-//
-//                                    }
-//                                }catch (Exception e){
-//                                    e.printStackTrace();
-//                                }
 
                             }
                         }
 
-//                        int speach=texttospeach.speak(name,TextToSpeech.QUEUE_FLUSH,null);
 
-                    //mp.start();
                         tracker.trackResults(mappedRecognitions, currTimestamp);
                         trackingOverlay.postInvalidate();
 
@@ -346,63 +304,6 @@ public static String speakThis="";
                 });
     }
 
-    private void setSpeechButton(String name) {
-        // check voice text contain below strings
-        //              "Person";
-        //              "Car"
-        //            "Microwave oven";
-        //            "Mobile phone";
-        //            "Apple"
-        //            "Cat"
-        //            "Mug"
-        //            "Platter"
-        //            "Watch"
-        //            "Remote control"
-
-
-        if (voice_text.toUpperCase(Locale.ROOT).contains("PHONE") || voice_text.toUpperCase(Locale.ROOT).contains("Mobile")){
-            Log.e("CHECK", "phone");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else  if (voice_text.toUpperCase(Locale.ROOT).contains("PERSON")){
-            Log.e("CHECK", "PERSON");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else  if (voice_text.toUpperCase(Locale.ROOT).contains("Microwave".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "Microwave");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Remote".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "Remote");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Watch".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "\"Watch\"");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Mug".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "\"Mug\"");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("Apple".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "\"Mug\"");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }else if (voice_text.toUpperCase(Locale.ROOT).contains("car".toUpperCase(Locale.ROOT))){
-            Log.e("CHECK", "\"car\"");
-            // Speak the text
-            speakThis=name;
-            voice_text="";
-        }
-
-    }
 
     @Override
     public synchronized void onStart() {
@@ -419,6 +320,11 @@ public static String speakThis="";
         return DESIRED_PREVIEW_SIZE;
     }
 
+    @Override
+    public void onClick(View v) {
+
+    }
+
     // Which detection model to use: by default uses Tensorflow Object Detection API frozen
     // checkpoints.
     private enum DetectorMode {
@@ -432,8 +338,5 @@ public static String speakThis="";
         runInBackground(() -> detector.setUseNNAPI(isChecked));
     }
 
-    @Override
-    protected void setNumThreads(final int numThreads) {
-        runInBackground(() -> detector.setNumThreads(numThreads));
-    }
+
 }

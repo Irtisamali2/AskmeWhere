@@ -15,6 +15,7 @@ limitations under the License.
 
 package org.blind.help.object.detection.env;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,23 +39,8 @@ public final class Logger {
   private final String messagePrefix;
   private int minLogLevel = DEFAULT_MIN_LOG_LEVEL;
 
-  /**
-   * Creates a Logger using the class name as the message prefix.
-   *
-   * @param clazz the simple name of this class is used as the message prefix.
-   */
-  public Logger(final Class<?> clazz) {
-    this(clazz.getSimpleName());
-  }
 
-  /**
-   * Creates a Logger using the specified message prefix.
-   *
-   * @param messagePrefix is prepended to the text of every message.
-   */
-  public Logger(final String messagePrefix) {
-    this(DEFAULT_TAG, messagePrefix);
-  }
+
 
   /**
    * Creates a Logger with a custom tag and a custom message prefix. If the message prefix is set to
@@ -78,11 +64,7 @@ public final class Logger {
     this(DEFAULT_TAG, null);
   }
 
-  /** Creates a Logger using the caller's class name as the message prefix. */
-  public Logger(final int minLogLevel) {
-    this(DEFAULT_TAG, null);
-    this.minLogLevel = minLogLevel;
-  }
+
 
   /**
    * Return caller's simple name.
@@ -112,9 +94,7 @@ public final class Logger {
     return Logger.class.getSimpleName();
   }
 
-  public void setMinLogLevel(final int minLogLevel) {
-    this.minLogLevel = minLogLevel;
-  }
+
 
   public boolean isLoggable(final int logLevel) {
     return logLevel >= minLogLevel || Log.isLoggable(tag, logLevel);
@@ -123,6 +103,7 @@ public final class Logger {
   private String toMessage(final String format, final Object... args) {
     return messagePrefix + (args.length > 0 ? String.format(format, args) : format);
   }
+  @SuppressLint("LogTagMismatch")
 
   public void v(final String format, final Object... args) {
     if (isLoggable(Log.VERBOSE)) {
@@ -130,23 +111,16 @@ public final class Logger {
     }
   }
 
-  public void v(final Throwable t, final String format, final Object... args) {
-    if (isLoggable(Log.VERBOSE)) {
-      Log.v(tag, toMessage(format, args), t);
-    }
-  }
 
+  @SuppressLint("LogTagMismatch")
   public void d(final String format, final Object... args) {
     if (isLoggable(Log.DEBUG)) {
       Log.d(tag, toMessage(format, args));
     }
   }
 
-  public void d(final Throwable t, final String format, final Object... args) {
-    if (isLoggable(Log.DEBUG)) {
-      Log.d(tag, toMessage(format, args), t);
-    }
-  }
+
+  @SuppressLint("LogTagMismatch")
 
   public void i(final String format, final Object... args) {
     if (isLoggable(Log.INFO)) {
@@ -154,11 +128,7 @@ public final class Logger {
     }
   }
 
-  public void i(final Throwable t, final String format, final Object... args) {
-    if (isLoggable(Log.INFO)) {
-      Log.i(tag, toMessage(format, args), t);
-    }
-  }
+  @SuppressLint("LogTagMismatch")
 
   public void w(final String format, final Object... args) {
     if (isLoggable(Log.WARN)) {
@@ -166,17 +136,14 @@ public final class Logger {
     }
   }
 
-  public void w(final Throwable t, final String format, final Object... args) {
-    if (isLoggable(Log.WARN)) {
-      Log.w(tag, toMessage(format, args), t);
-    }
-  }
+  @SuppressLint("LogTagMismatch")
 
   public void e(final String format, final Object... args) {
     if (isLoggable(Log.ERROR)) {
       Log.e(tag, toMessage(format, args));
     }
   }
+  @SuppressLint("LogTagMismatch")
 
   public void e(final Throwable t, final String format, final Object... args) {
     if (isLoggable(Log.ERROR)) {

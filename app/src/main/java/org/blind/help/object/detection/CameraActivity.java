@@ -87,17 +87,13 @@ public boolean  isSpeaking=false;
   private Runnable imageConverter;
   public String re = ".*apple.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*platter.*|.*remote.*|.*control.*|.*watch.*";
 
-  private LinearLayout bottomSheetLayout;
-  private LinearLayout gestureLayout;
-  private BottomSheetBehavior<LinearLayout> sheetBehavior;
+
+
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
 
-  protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
-  protected ImageView bottomSheetArrowImageView;
-  private ImageView plusImageView, minusImageView;
+
   private SwitchCompat apiSwitchCompat;
-  private TextView threadsTextView;
   public int  REQUEST_CODE_SPEECH_INPUT=1000;
   Button speechBtn;
   @Override
@@ -109,9 +105,7 @@ public boolean  isSpeaking=false;
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
     setContentView(R.layout.tfe_od_activity_camera);
-//    Toolbar toolbar = findViewById(R.id.toolbar);
-//    setSupportActionBar(toolbar);
-//    getSupportActionBar().setDisplayShowTitleEnabled(false);
+
     speechBtn= findViewById(R.id.button);
     mTTS = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
       @Override
@@ -131,7 +125,6 @@ public boolean  isSpeaking=false;
     }, "com.google.android.tts");
 
 
-//     mTTS.speak("I am Here",TextToSpeech.QUEUE_FLUSH,null);
     speechBtn.setOnClickListener(new View.OnClickListener(){
 
       @Override
@@ -154,70 +147,6 @@ public boolean  isSpeaking=false;
       requestPermission();
     }
 
-    //    threadsTextView = findViewById(R.id.threads);
-//    plusImageView = findViewById(R.id.plus);
-//    minusImageView = findViewById(R.id.minus);
-//    apiSwitchCompat = findViewById(R.id.api_info_switch);
-//    bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
-//    gestureLayout = findViewById(R.id.gesture_layout);
-//    sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
-//    bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-
-//    ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
-//    vto.addOnGlobalLayoutListener(
-//        new ViewTreeObserver.OnGlobalLayoutListener() {
-//          @Override
-//          public void onGlobalLayout() {
-//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-//              gestureLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-//            } else {
-//              gestureLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-//            }
-//            //                int width = bottomSheetLayout.getMeasuredWidth();
-//            int height = gestureLayout.getMeasuredHeight();
-//
-//            sheetBehavior.setPeekHeight(height);
-//          }
-//        });
-//    sheetBehavior.setHideable(false);
-
-//    sheetBehavior.setBottomSheetCallback(
-//        new BottomSheetBehavior.BottomSheetCallback() {
-//          @Override
-//          public void onStateChanged(@NonNull View bottomSheet, int newState) {
-//            switch (newState) {
-//              case BottomSheetBehavior.STATE_HIDDEN:
-//                break;
-//              case BottomSheetBehavior.STATE_EXPANDED:
-//                {
-//                  bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_down);
-//                }
-//                break;
-//              case BottomSheetBehavior.STATE_COLLAPSED:
-//                {
-//                  bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
-//                }
-//                break;
-//              case BottomSheetBehavior.STATE_DRAGGING:
-//                break;
-//              case BottomSheetBehavior.STATE_SETTLING:
-//                bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
-//                break;
-//            }
-//          }
-//
-//          @Override
-//          public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
-//        });
-//
-//    frameValueTextView = findViewById(R.id.frame_info);
-//    cropValueTextView = findViewById(R.id.crop_info);
-//    inferenceTimeTextView = findViewById(R.id.inference_info);
-
-//    apiSwitchCompat.setOnCheckedChangeListener(this);
-//
-//    plusImageView.setOnClickListener(this);
-//    minusImageView.setOnClickListener(this);
   }
 
   protected int[] getRgbBytes() {
@@ -225,13 +154,9 @@ public boolean  isSpeaking=false;
     return rgbBytes;
   }
 
-  protected int getLuminanceStride() {
-    return yRowStride;
-  }
 
-  protected byte[] getLuminance() {
-    return yuvBytes[0];
-  }
+
+
 
   /** Callback for android.hardware.Camera API */
   @Override
@@ -497,9 +422,11 @@ public boolean  isSpeaking=false;
 
   private String chooseCamera() {
     final CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
     try {
       for (final String cameraId : manager.getCameraIdList()) {
         final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+
 
         // We don't use a front facing camera in this sample.
         final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
@@ -603,38 +530,7 @@ public boolean  isSpeaking=false;
     else apiSwitchCompat.setText("TFLITE");
   }
 
-  @Override
-  public void onClick(View v) {
-//    if (v.getId() == R.id.plus) {
-//      String threads = threadsTextView.getText().toString().trim();
-//      int numThreads = Integer.parseInt(threads);
-//      if (numThreads >= 9) return;
-//      numThreads++;
-//      threadsTextView.setText(String.valueOf(numThreads));
-//      setNumThreads(numThreads);
-//    } else if (v.getId() == R.id.minus) {
-//      String threads = threadsTextView.getText().toString().trim();
-//      int numThreads = Integer.parseInt(threads);
-//      if (numThreads == 1) {
-//        return;
-//      }
-//      numThreads--;
-//      threadsTextView.setText(String.valueOf(numThreads));
-//      setNumThreads(numThreads);
-//    }
-  }
 
-//  protected void showFrameInfo(String frameInfo) {
-//    frameValueTextView.setText(frameInfo);
-//  }
-
-//  protected void showCropInfo(String cropInfo) {
-//    cropValueTextView.setText(cropInfo);
-//  }
-
-//  protected void showInference(String inferenceTime) {
-//    inferenceTimeTextView.setText(inferenceTime);
-//  }
 
   protected abstract void processImage();
 
@@ -644,7 +540,6 @@ public boolean  isSpeaking=false;
 
   protected abstract Size getDesiredPreviewFrameSize();
 
-  protected abstract void setNumThreads(int numThreads);
 
   protected abstract void setUseNNAPI(boolean isChecked);
 }
