@@ -1,5 +1,7 @@
 package org.blind.help.object.detection.distance;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 public class DistanceFinder {
@@ -31,6 +33,7 @@ public class DistanceFinder {
 
         }
     };
+    @NonNull
     public static String getDistanceInInches(String objectName, float widthInPixels){
         if(DistanceFinder._class.contains(objectName)) {
             // result upto 2 floating point precision
@@ -92,6 +95,7 @@ public class DistanceFinder {
         return " ";
     }
 
+    @NonNull
     public static String getDistanceInInchesUsingFocal(String objectName, float widthInPixels){
         if(DistanceFinder._class.contains(objectName)) {
             // result upto 2 floating point precision
@@ -144,7 +148,7 @@ public class DistanceFinder {
                     return String.format("%.02f",new DistanceModel("table", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInchesUsingFocal(widthInPixels)) + " inches";
 
                 case "laptop":
-                    return String.format("%.02f",new DistanceModel("laptop", 387.606f, 1.43f, 21.5f).calcuteDistanceFromCameraInInchesUsingFocal(widthInPixels)) + " inches";
+                    return String.format("%.02f",new DistanceModel("laptop", 387.606f, 18.1f, 21.5f).calcuteDistanceFromCameraInInchesUsingFocal(widthInPixels)) + " inches";
 
 
             }

@@ -1,5 +1,6 @@
 package org.blind.help.object.detection.distance;
 
+import org.blind.help.object.detection.CameraActivity;
 import org.blind.help.object.detection.DetectorActivity;
 
 public class DistanceModel {
@@ -23,6 +24,11 @@ public class DistanceModel {
     }
 
     public float calcuteDistanceFromCameraInInchesUsingFocal( float precivedWidthOfObjectInPixels) {
+
+        return (float) ((measureWidthOfObjectInInches * DetectorActivity.focal) / precivedWidthOfObjectInPixels);
+    }
+    public float calcuteDistanceFromCameraInInchesUsingFocal( float precivedWidthOfObjectInPixels,float measureWidthOfObjectInInches) {
+
         return (float) ((measureWidthOfObjectInInches * DetectorActivity.focal) / precivedWidthOfObjectInPixels);
     }
 

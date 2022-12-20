@@ -1,18 +1,3 @@
-/*
- * Copyright 2019 The TensorFlow Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package org.blind.help.object.detection;
 
@@ -68,13 +53,9 @@ import org.blind.help.object.detection.env.Logger;
 public class CameraConnectionFragment extends Fragment {
   private static final Logger LOGGER = new Logger();
 
-  /**
-   * The camera preview size will be chosen to be the smallest frame by pixel size capable of
-   * containing a DESIRED_SIZE x DESIRED_SIZE square.
-   */
+
   private static final int MINIMUM_PREVIEW_SIZE = 2177;
 
-  /** Conversion from screen rotation to JPEG orientation. */
   private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
   private static final String FRAGMENT_DIALOG = "dialog";
@@ -199,26 +180,15 @@ public class CameraConnectionFragment extends Fragment {
     this.inputSize = inputSize;
   }
 
-  /**
-   * Given {@code choices} of {@code Size}s supported by a camera, chooses the smallest one whose
-   * width and height are at least as large as the minimum of both, or an exact match if possible.
-   *
-   * @param choices The list of sizes that the camera supports for the intended output class
-   * @param width The minimum desired width
-   * @param height The minimum desired height
-   * @return The optimal {@code Size}, or an arbitrary one if none were big enough
-   */
   protected static Size chooseOptimalSize(final Size[] choices, final int width, final int height) {
     final int minSize = Math.max(Math.min(width, height), MINIMUM_PREVIEW_SIZE);
      Size desiredSize = new Size(width, height);
 
-    // Collect the supported resolutions that are at least as big as the preview Surface
     boolean exactSizeFound = false;
     final List<Size> bigEnough = new ArrayList<Size>();
     final List<Size> tooSmall = new ArrayList<Size>();
     for (final Size option : choices) {
       if (option.equals(desiredSize)) {
-        // Set the size but don't return yet so that remaining sizes will still be logged.
         exactSizeFound = true;
       }
 
@@ -531,11 +501,9 @@ public class CameraConnectionFragment extends Fragment {
     void onPreviewSizeChosen(Size size, int cameraRotation);
   }
 
-  /** Compares two {@code Size}s based on their areas. */
   static class CompareSizesByArea implements Comparator<Size> {
     @Override
     public int compare(final Size lhs, final Size rhs) {
-      // We cast here to ensure the multiplications won't overflow
       return Long.signum(
           (long) lhs.getWidth() * lhs.getHeight() - (long) rhs.getWidth() * rhs.getHeight());
     }

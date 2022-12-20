@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import java.io.IOException;
 import java.util.List;
 
-import org.blind.help.object.detection.R;
 import org.blind.help.object.detection.customview.AutoFitTextureView;
 import org.blind.help.object.detection.env.ImageUtils;
 import org.blind.help.object.detection.env.Logger;

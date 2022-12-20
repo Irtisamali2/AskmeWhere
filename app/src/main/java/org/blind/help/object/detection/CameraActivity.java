@@ -1,18 +1,4 @@
-/*
- * Copyright 2019 The TensorFlow Authors. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package org.blind.help.object.detection;
 
@@ -26,7 +12,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.hardware.TriggerEvent;
 import android.hardware.TriggerEventListener;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
@@ -44,7 +29,6 @@ import android.os.Trace;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
@@ -56,11 +40,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+
 import android.widget.Toast;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -68,7 +49,6 @@ import java.util.Locale;
 import org.blind.help.object.detection.env.DoubleClickListener;
 import org.blind.help.object.detection.env.ImageUtils;
 import org.blind.help.object.detection.env.Logger;
-import org.blind.help.object.detection.R;
 
 public abstract class CameraActivity extends AppCompatActivity
     implements OnImageAvailableListener,
@@ -108,15 +88,16 @@ public  static SizeF cameraPhysicalSize;
  public float yChange = 0;
  public float [] history = new float[2];
  public String [] direction = {"NONE","NONE"};
+ public  boolean isWelcome=true;
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
+  public  static float horizontalViewField=0.0f;
   public String cmd0="Tap on screen search for object or double tap for the help?";
-  public CharSequence cmdWelcome=  "\"Welcome, You can use following command in this app.\n1. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
+  public CharSequence cmdWelcome=  "Welcome, You can use following command in this app.\n1. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
           "\n2. You can search all objects by saying \"all\"  objects after tapping on the screen\n"+
-          "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?"+
-          "\n4. It can detect following objects.\n1 Person.\n2 Apple\n3 Mug.\n4 Car.\n5 " +
-          "Cat.\n6 bowl.\n/7 watch.\n8 mobile phone.\n9 remote control.\n10 microwave oven.\n" +
-          "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 suitcase.\n20 platter.\n\"";
+          "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?\n4. It can detect following objects: Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and platter";
+
+//  public String cmdWelcome2="Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and platter";
   public TriggerEventListener triggerEventListener;
   public float movementAfterDetection=0;
   public int  REQUEST_CODE_SPEECH_INPUT=1000;
@@ -133,13 +114,12 @@ public  static SizeF cameraPhysicalSize;
       public void onInit(int status) {
         if(status==TextToSpeech.SUCCESS){
           int rs2=mTTS.setSpeechRate(0.5f);
-          int rs= mTTS.setLanguage(Locale.US);
-          mTTS.speak(cmdWelcome,TextToSpeech.QUEUE_FLUSH,null,null);
+          int rs= mTTS.setLanguage(Locale.UK);
 
           if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED ||rs2==TextToSpeech.ERROR){
             Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
           }else{
-//           mTTS.sp(String.valueOf(cmdWelcome),TextToSpeech.QUEUE_FLUSH,null);
+            mTTS.speak(cmdWelcome,TextToSpeech.QUEUE_FLUSH,null,null);
 
           }
         }else {
@@ -154,6 +134,7 @@ public  static SizeF cameraPhysicalSize;
 
 
     speechBtn= findViewById(R.id.button);
+    speechBtn.setText(cmdWelcome);
 
     speechBtn.setOnLongClickListener(new View.OnLongClickListener() {
       @Override
@@ -185,6 +166,8 @@ public  static SizeF cameraPhysicalSize;
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
         try {
+
+          mTTS.stop();
           startActivityForResult(intent,REQUEST_CODE_SPEECH_INPUT );//speech
         }catch (Exception e){
           LOGGER.e("Exception:",e.toString());
@@ -216,13 +199,9 @@ public  static SizeF cameraPhysicalSize;
     return rgbBytes;
   }
 
-  protected int getLuminanceStride() {
-    return yRowStride;
-  }
 
-  protected byte[] getLuminance() {
-    return yuvBytes[0];
-  }
+
+
 
   /** Callback for android.hardware.Camera API */
   @Override
@@ -236,6 +215,7 @@ public  static SizeF cameraPhysicalSize;
       // Initialize the storage bitmaps once when the resolution is known.
       if (rgbBytes == null) {
         Camera.Size previewSize = camera.getParameters().getPreviewSize();
+       horizontalViewField=  camera.getParameters().getHorizontalViewAngle();
         previewHeight = previewSize.height;
         previewWidth = previewSize.width;
         rgbBytes = new int[previewWidth * previewHeight];
@@ -390,6 +370,8 @@ public  static SizeF cameraPhysicalSize;
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    mTTS.stop();
+
     super.onActivityResult(requestCode, resultCode, data);
     if(requestCode==0) return;
     switch (requestCode){
@@ -516,7 +498,7 @@ public  static SizeF cameraPhysicalSize;
                     characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
         LOGGER.i("Camera API lv2?: %s", useCamera2API);
        cameraPhysicalSize= characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
-        focal =characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0]/25.4;
+        focal =characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0];
         return cameraId;
       }
     } catch (CameraAccessException e) {
@@ -617,27 +599,21 @@ public  static SizeF cameraPhysicalSize;
     Log.i("onSensorChanged: ",String.valueOf(event.values.length));
     if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
       Log.i("onSensorChanged: ", String.valueOf(event.values[0]+","+event.values[1]+","+event.values[2]));
-//      System.arraycopy(event.values, 0, rotationMatrix,
-//              0, rotationMatrix.length);
+
       float tempx=history[0] - event.values[0];
       float tempy = history[1] - event.values[1];
 
       Log.i("onSensorChanged X: ", String.valueOf(xChange+" , error,"+ tempx/(tempx-xChange)*100));
 
-//      if(tempx>0.0001 || tempx> -0.0001 )
        xChange =tempx;
-//       else
-//         xChange=0;
+
       double aX= event.values[0];
       double aY= event.values[1];
       //aZ= event.values[2];
       double angle = Math.atan2(aX, aY)/(Math.PI/180);
-//      if(tempx>0.0001 || tempx> -0.0001 )
         yChange =tempy;
       Log.i("onSensorChanged Angle: ", String.valueOf(angle));
 
-//      else
-//        yChange=0;
 
 
       history[0] = event.values[0];

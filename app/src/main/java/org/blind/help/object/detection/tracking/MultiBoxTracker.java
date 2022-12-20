@@ -71,7 +71,6 @@ public class MultiBoxTracker   {
   private int frameWidth;
   private int frameHeight;
   private int sensorOrientation;
-  TextToSpeech texttospeach;
   MediaPlayer mp;
   String name;
 
@@ -159,10 +158,6 @@ public class MultiBoxTracker   {
           !TextUtils.isEmpty(recognition.title)
               ? String.format("%s %.2f", recognition.title, (100 * recognition.detectionConfidence))
               : String.format("%.2f", (100 * recognition.detectionConfidence));
-      //            borderedText.drawText(canvas, trackedPos.left + cornerSize, trackedPos.top,
-      // labelString);
-
-     // float confi= 100* recognition.detectionConfidence;
     name=recognition.title;
       borderedText.drawText(
               canvas, trackedPos.left + cornerSize, trackedPos.top, labelString + "%", boxPaint);

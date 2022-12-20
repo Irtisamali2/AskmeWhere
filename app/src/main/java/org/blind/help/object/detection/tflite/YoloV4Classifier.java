@@ -1,17 +1,4 @@
-/*
 
-Copyright 2019 The TensorFlow Authors. All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-==============================================================================
-
-*/
 
 package org.blind.help.object.detection.tflite;
 
@@ -22,7 +9,6 @@ import android.graphics.RectF;
 import android.os.Build;
 import android.util.Log;
 
-import org.blind.help.object.detection.DetectorActivity;
 import org.blind.help.object.detection.MainActivity;
 import org.blind.help.object.detection.env.Logger;
 import org.blind.help.object.detection.env.Utils;
@@ -107,18 +93,6 @@ public class YoloV4Classifier implements Classifier {
         return d;
     }
 
-    @Override
-    public void enableStatLogging(final boolean logStats) {
-    }
-
-    @Override
-    public String getStatString() {
-        return "";
-    }
-
-    @Override
-    public void close() {
-    }
 
     public void setNumThreads(int num_threads) {
         if (tfLite != null) tfLite.setNumThreads(num_threads);
@@ -129,7 +103,6 @@ public class YoloV4Classifier implements Classifier {
         if (tfLite != null) tfLite.setUseNNAPI(isChecked);
     }
 
-    @Override
     public float getObjThresh() {
         return MainActivity.MINIMUM_CONFIDENCE_TF_OD_API;
     }
@@ -171,9 +144,7 @@ public class YoloV4Classifier implements Classifier {
 
     private boolean isModelQuantized;
 
-    // Config values.
 
-    // Pre-allocated buffers.
     private Vector<String> labels = new Vector<String>();
     private int[] intValues;
 
@@ -265,9 +236,7 @@ public class YoloV4Classifier implements Classifier {
     protected static final int BATCH_SIZE = 1;
     protected static final int PIXEL_SIZE = 3;
 
-    /**
-     * Writes Image data into a {@code ByteBuffer}.
-     */
+
     protected ByteBuffer convertBitmapToByteBuffer(Bitmap bitmap) {
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(4 * BATCH_SIZE * INPUT_SIZE * INPUT_SIZE * PIXEL_SIZE);
         byteBuffer.order(ByteOrder.nativeOrder());
@@ -285,15 +254,6 @@ public class YoloV4Classifier implements Classifier {
         return byteBuffer;
     }
 
-
-    /**
-     * For yolov4-tiny, the situation would be a little different from the yolov4, it only has two
-     * output. Both has three dimenstion. The first one is a tensor with dimension [1, 2535,4], containing all the bounding boxes.
-     * The second one is a tensor with dimension [1, 2535, class_num], containing all the classes score.
-     * @param byteBuffer input ByteBuffer, which contains the image information
-     * @param bitmap pixel disenty used to resize the output images
-     * @return an array list containing the recognitions
-     */
 
     private ArrayList<Recognition> getDetectionsForFull(ByteBuffer byteBuffer, Bitmap bitmap) {
         ArrayList<Recognition> detections = new ArrayList<Recognition>();
