@@ -1,14 +1,8 @@
 package org.blind.help.object.detection.env;
 
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.os.Environment;
-import android.util.Log;
+
 
 import java.io.File;
 import java.io.FileInputStream;
