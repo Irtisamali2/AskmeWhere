@@ -301,16 +301,17 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                     runOnUiThread(
                             () -> {
+                                if(flashMode.toLowerCase(Locale.ROOT).matches("auto")&& !flashMode.isEmpty())
+                                    flashLightChecking();
                                // Log.i("csi",String.valueOf(o));
                                 luminousityValue=calculateAverageLuminousity();
                                 if (o>=5) {
-                                    if(flashMode=="auto" &&!flashMode.isEmpty())
-                                    flashLightChecking();
-                                    else
-                                    if(flashMode=="on" && !flashMode.isEmpty()){
+
+
+                                    if(flashMode.toLowerCase(Locale.ROOT).matches("on") && !flashMode.isEmpty()){
                                         turnFlashLight(true,"");
                                         }
-                                    else if(flashMode=="off"){
+                                    else if(flashMode.toLowerCase(Locale.ROOT).matches("off")){
                                         turnFlashLight(false,"");
                                         flashMode="";
                                     }
@@ -344,6 +345,7 @@ o++;
 
         int threshold = 7;  // Adjust this value to your liking
         float luminosity = calculateAverageLuminousity();
+
         if (luminosity<threshold && !CameraConnectionFragment.flash)
             turnFlashLight(true,"auto");
         else if (CameraConnectionFragment.flash && luminosity>30 && (luminosity<95||luminosity>160)  )

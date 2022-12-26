@@ -122,6 +122,7 @@ Intent intent= getIntent();
    if (bundle!=null) {
      voice_text = String.valueOf(bundle.getString("voice_text"));
      flashMode=String.valueOf(bundle.getString("mode"));
+     Log.i("flash", flashMode);
    }
    CameraConnectionFragment.flash=flag;
     mTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
