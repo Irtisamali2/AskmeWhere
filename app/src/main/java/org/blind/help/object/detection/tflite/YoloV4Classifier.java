@@ -10,7 +10,6 @@ import android.os.Build;
 import android.util.Log;
 
 import org.blind.help.object.detection.MainActivity;
-import org.blind.help.object.detection.env.Logger;
 import org.blind.help.object.detection.env.Utils;
 import org.blind.help.object.detection.distance.DistanceFinder;
 import java.io.BufferedReader;
@@ -48,7 +47,6 @@ public class YoloV4Classifier implements Classifier {
         BufferedReader br = new BufferedReader(new InputStreamReader(labelsInput));
         String line;
         while ((line = br.readLine()) != null) {
-            LOGGER.w(line);
             d.labels.add(line);
         }
         br.close();
@@ -107,7 +105,6 @@ public class YoloV4Classifier implements Classifier {
         return MainActivity.MINIMUM_CONFIDENCE_TF_OD_API;
     }
 
-    private static final Logger LOGGER = new Logger();
 
     // Float model
     private static final float IMAGE_MEAN = 0;

@@ -41,7 +41,6 @@ import org.blind.help.object.detection.customview.OverlayView;
 import org.blind.help.object.detection.customview.OverlayView.DrawCallback;
 import org.blind.help.object.detection.env.BorderedText;
 import org.blind.help.object.detection.env.ImageUtils;
-import org.blind.help.object.detection.env.Logger;
 import org.blind.help.object.detection.tflite.Classifier;
 import org.blind.help.object.detection.tflite.YoloV4Classifier;
 import org.blind.help.object.detection.tracking.MultiBoxTracker;
@@ -51,7 +50,6 @@ import org.blind.help.object.detection.tracking.MultiBoxTracker;
  * objects.
  */
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
-    private static final Logger LOGGER = new Logger();
     public static String speakThis = "";
     public String searchingClass = "";
     int o=0;
@@ -122,7 +120,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             cropSize = TF_OD_API_INPUT_SIZE;
         } catch (final IOException e) {
             e.printStackTrace();
-            LOGGER.e(e, "Exception initializing classifier!");
             Toast toast =
                     Toast.makeText(
                             getApplicationContext(), "Classifier could not be initialized", Toast.LENGTH_SHORT);
@@ -134,9 +131,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         previewHeight = size.getHeight();
 
         sensorOrientation = rotation - getScreenOrientation();
-        LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
 
-        LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
         rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
         croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Config.ARGB_8888);
 
@@ -177,7 +172,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             return;
         }
         computingDetection = true;
-        LOGGER.i("Preparing image " + currTimestamp + " for detection in bg thread.");
 
         rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
 
@@ -199,7 +193,6 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                     Log.i("focal", String.valueOf(DetectorActivity.focal));
 
                     //todo: Navigation implementation
-                    LOGGER.i("Running detection on image " + currTimestamp);
                     final long startTime = SystemClock.uptimeMillis();
 
 

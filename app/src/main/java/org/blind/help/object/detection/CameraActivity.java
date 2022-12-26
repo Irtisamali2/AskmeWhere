@@ -49,7 +49,6 @@ import java.util.Locale;
 
 import org.blind.help.object.detection.env.DoubleClickListener;
 import org.blind.help.object.detection.env.ImageUtils;
-import org.blind.help.object.detection.env.Logger;
 
 public abstract class CameraActivity extends AppCompatActivity
     implements OnImageAvailableListener,
@@ -58,7 +57,6 @@ public abstract class CameraActivity extends AppCompatActivity
         View.OnClickListener, SensorEventListener {
   public String voice_text = "";
   public TextToSpeech mTTS;
-  private static final Logger LOGGER = new Logger();
 
   public boolean  isSpeaking=false;
   public boolean isHelpMenu = false;
@@ -113,7 +111,6 @@ public  static SizeF cameraPhysicalSize;
   protected void onCreate(final Bundle savedInstanceState) {
 // todo:added sensor
 
-    LOGGER.d("onCreate " + this);
     super.onCreate(null);
 Intent intent= getIntent();
    boolean flag=intent.getBooleanExtra("flash",false);
@@ -200,7 +197,6 @@ Intent intent= getIntent();
           mTTS.stop();
           startActivityForResult(intent,REQUEST_CODE_SPEECH_INPUT );//speech
         }catch (Exception e){
-          LOGGER.e("Exception:",e.toString());
           Toast.makeText(getApplicationContext(), " "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
         }
       }
@@ -237,7 +233,6 @@ Intent intent= getIntent();
   @Override
   public void onPreviewFrame(final byte[] bytes, final Camera camera) {
     if (isProcessingFrame) {
-      LOGGER.w("Dropping frame!");
       return;
     }
 
@@ -252,7 +247,6 @@ Intent intent= getIntent();
         onPreviewSizeChosen(new Size(previewSize.width, previewSize.height), 90);
       }
     } catch (final Exception e) {
-      LOGGER.e(e, "Exception!");
       return;
     }
 
@@ -336,7 +330,6 @@ Intent intent= getIntent();
 
       processImage();
     } catch (final Exception e) {
-      LOGGER.e(e, "Exception!");
       Trace.endSection();
       return;
     }
@@ -345,13 +338,11 @@ Intent intent= getIntent();
 
   @Override
   public synchronized void onStart() {
-    LOGGER.d("onStart " + this);
     super.onStart();
   }
 
   @Override
   public synchronized void onResume() {
-    LOGGER.d("onResume " + this);
     super.onResume();
     sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
@@ -362,7 +353,6 @@ Intent intent= getIntent();
 
   @Override
   public synchronized void onPause() {
-    LOGGER.d("onPause " + this);
 
     handlerThread.quitSafely();
     try {
@@ -370,7 +360,6 @@ Intent intent= getIntent();
       handlerThread = null;
       handler = null;
     } catch (final InterruptedException e) {
-      LOGGER.e(e, "Exception!");
     }
 
     super.onPause();
@@ -378,13 +367,11 @@ Intent intent= getIntent();
 
   @Override
   public synchronized void onStop() {
-    LOGGER.d("onStop " + this);
     super.onStop();
   }
 
   @Override
   public synchronized void onDestroy() {
-    LOGGER.d("onDestroy " + this);
     if(mTTS!=null){
       mTTS.stop();
       mTTS.shutdown();
@@ -556,13 +543,11 @@ Intent intent= getIntent();
             (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
                 || isHardwareLevelSupported(
                     characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
-        LOGGER.i("Camera API lv2?: %s", useCamera2API);
        cameraPhysicalSize= characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
         focal =characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS)[0];
         return cameraId;
       }
     } catch (CameraAccessException e) {
-      LOGGER.e(e, "Not allowed to access camera");
     }
 
     return null;
@@ -611,7 +596,6 @@ Intent intent= getIntent();
     for (int i = 0; i < planes.length; ++i) {
       final ByteBuffer buffer = planes[i].getBuffer();
       if (yuvBytes[i] == null) {
-        LOGGER.d("Initializing buffer %d at size %d", i, buffer.capacity());
         yuvBytes[i] = new byte[buffer.capacity()];
       }
       buffer.get(yuvBytes[i]);
@@ -695,7 +679,6 @@ Intent intent= getIntent();
       }
 
     }
-    LOGGER.i("sensor","sensing");
   }
 
 

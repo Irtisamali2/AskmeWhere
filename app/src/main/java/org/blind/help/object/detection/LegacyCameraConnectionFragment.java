@@ -22,11 +22,9 @@ import java.util.List;
 
 import org.blind.help.object.detection.customview.AutoFitTextureView;
 import org.blind.help.object.detection.env.ImageUtils;
-import org.blind.help.object.detection.env.Logger;
 
 @SuppressLint("ValidFragment")
 public class LegacyCameraConnectionFragment extends Fragment {
-  private static final Logger LOGGER = new Logger();
   /** Conversion from screen rotation to JPEG orientation. */
   private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
@@ -165,7 +163,6 @@ public class LegacyCameraConnectionFragment extends Fragment {
       backgroundThread.join();
       backgroundThread = null;
     } catch (final InterruptedException e) {
-      LOGGER.e(e, "Exception!");
     }
   }
 
