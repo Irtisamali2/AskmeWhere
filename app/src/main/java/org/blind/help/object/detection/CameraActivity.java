@@ -32,6 +32,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.util.Size;
 import android.util.SizeF;
@@ -157,16 +158,23 @@ Intent intent= getIntent();
     speechBtn= findViewById(R.id.button);
     speechBtn.setText(cmdWelcome);
 
+
     speechBtn.setOnLongClickListener(new View.OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {
         mTTS.stop();
         isSpeaking=false;
-
+        mTTS.speak("App Has been closed",TextToSpeech.QUEUE_FLUSH,null,"close");
         trackI=0;
         isHelpMenu=true;
-        System.exit(0);
-        return false;
+        try {
+          Thread.sleep(3000);
+          System.exit(0);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+        if(!mTTS.isSpeaking());
+        return true;
       }
     });
     speechBtn.setOnClickListener(new DoubleClickListener() {
