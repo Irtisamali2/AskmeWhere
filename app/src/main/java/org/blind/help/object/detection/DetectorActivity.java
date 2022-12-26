@@ -65,7 +65,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             "\nIt has Flash Light mode on, off, auto can be activated by saying turn on, turn off, turn auto."+
             "\nYou can Check light in surrounding, by saying lightness, which include dark, day light, dim light ,moderate light, Too much Light."+
             "\nIt can detect following objects. Person, Apple, Mug, Car, Cat. bowl. watch. mobile phone. remote control. microwave oven" +
-            "laptop. toilet. spoon. fork. chair. bottle. toaster. suitcase. platter. ";
+            "laptop. toilet. spoon. fork. chair. bottle. toaster. suitcase. platter. \nClose App by long press";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;

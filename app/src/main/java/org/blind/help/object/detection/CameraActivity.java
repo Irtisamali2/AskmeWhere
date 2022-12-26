@@ -95,12 +95,12 @@ public  static SizeF cameraPhysicalSize;
   public  static float horizontalViewField=0.0f;
   public String flashMode="auto";
   public String cmd0="Tap on screen search for object or double tap for the help?";
-  public CharSequence cmdWelcome=  "Welcome, You can use following command in this app.\nYou can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
+  public CharSequence cmdWelcome=  "Welcome, You can use following command in this app.\n1You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
           "\n2. You can search all objects by saying 'all'  objects after tapping on the screen"+
           "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?\n4. It can detect following objects: Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet," +
           "spoon,fork,chair,table,bottle,toaster,suitcase, and platter." +
           "\n5. Say turn on, turn off or turn auto to set Mobile Flash Light Mode." +
-           "\n6 You can Check light in surrounding, by saying lightness, which include dark, day light, dim light ,moderate light, Too much Light";
+           "\n6 You can Check light in surrounding, by saying lightness, which include dark, day light, dim light ,moderate light, Too much Light. \n7 Close app by long press";
 
   public boolean speakWelcome=true;
 //  public String cmdWelcome2="Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and platter";
@@ -165,6 +165,7 @@ Intent intent= getIntent();
 
         trackI=0;
         isHelpMenu=true;
+        System.exit(0);
         return false;
       }
     });
