@@ -73,6 +73,7 @@ public  static SizeF cameraPhysicalSize;
   protected int previewHeight = 2177;
   private boolean debug = false;
   private final float[] rotationMatrix = new float[9];
+  public  float luminousityValue=0.0f;
 
   private Handler handler;
   private HandlerThread handlerThread;
@@ -83,7 +84,7 @@ public  static SizeF cameraPhysicalSize;
   private int yRowStride;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
-  public String re = ".*apple.*|.*platter.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*watch.*|.*bottle.*|.*chair.*|.*toilet.*|.*spoon.*|.*toaster.*|.*fork.*|.*suitcase  .*|.*table.*|.*laptop.*";
+  public String re = ".*apple.*|.*platter.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*watch.*|.*bottle.*|.*chair.*|.*toilet.*|.*spoon.*|.*toaster.*|.*fork.*|.*suitcase  .*|.*laptop.*";
  public float xChange =0;
  public float yChange = 0;
  public float [] history = new float[2];
@@ -92,10 +93,15 @@ public  static SizeF cameraPhysicalSize;
   public boolean isStopLooking=false;
   public boolean isAllLooking=false;
   public  static float horizontalViewField=0.0f;
+  public String flashMode="auto";
   public String cmd0="Tap on screen search for object or double tap for the help?";
-  public CharSequence cmdWelcome=  "Welcome, You can use following command in this app.\n1. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
-          "\n2. You can search all objects by saying \"all\"  objects after tapping on the screen\n"+
-          "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?\n4. It can detect following objects: Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and platter";
+  public CharSequence cmdWelcome=  "Welcome, You can use following command in this app.\nYou can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
+          "\n2. You can search all objects by saying 'all'  objects after tapping on the screen"+
+          "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?\n4. It can detect following objects: Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet," +
+          "spoon,fork,chair,table,bottle,toaster,suitcase, and platter." +
+          "\n5. Say turn on, turn off or turn auto to set Mobile Flash Light Mode." +
+           "\n6 You can Check light in surrounding, by saying lightness, which include dark, day light, dim light ,moderate light, Too much Light";
+
   public boolean speakWelcome=true;
 //  public String cmdWelcome2="Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and platter";
   public TriggerEventListener triggerEventListener;
@@ -112,16 +118,16 @@ Intent intent= getIntent();
    boolean flag=intent.getBooleanExtra("flash",false);
    boolean welcome=intent.getBooleanExtra("welcome",true);
    Bundle bundle = intent.getExtras();
-   if (bundle!=null)
-     voice_text=String.valueOf(bundle.getString("voice_text"));
-  //if(!getIntent().getStringExtra("voice_text").isEmpty())
- // voice_text=getIntent().getStringExtra("voice_text");
+   if (bundle!=null) {
+     voice_text = String.valueOf(bundle.getString("voice_text"));
+     flashMode=String.valueOf(bundle.getString("mode"));
+   }
    CameraConnectionFragment.flash=flag;
     mTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
       @Override
       public void onInit(int status) {
         if(status==TextToSpeech.SUCCESS){
-          int rs2=mTTS.setSpeechRate(0.5f);
+          int rs2=mTTS.setSpeechRate(0.6f);
           int rs= mTTS.setLanguage(Locale.UK);
 
           if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED ||rs2==TextToSpeech.ERROR){
@@ -171,7 +177,6 @@ Intent intent= getIntent();
         trackI=0;
         isHelpMenu=true;
       }
-//TODO: Double CLick Implement
       @Override
       public void onSingleClick() {
         mTTS.stop();
@@ -395,26 +400,53 @@ Intent intent= getIntent();
           ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
           String text = result.get(0);
-          Log.i("rs",text);
-          if(text.matches(re)) {
-            voice_text ="Move your phone in the environment to find object?";
-            mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
-            voice_text=result.get(0);
-            isStopLooking=false;
-            isAllLooking=false;
-          }else  if(text.matches(".*stop.*")) {
-            voice_text = "Object Detection Has Been Stop";
-            mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
-            voice_text="";
-            isStopLooking=true;
-            isAllLooking=false;
 
-          }else  if(text.matches(".* all.*")) {
+
+          if (text.matches(re)) {
+            voice_text = "Move your phone in the environment to find object?";
+            mTTS.speak(voice_text, TextToSpeech.QUEUE_FLUSH, null);
+            voice_text = result.get(0);
+            isStopLooking = false;
+            isAllLooking = false;
+          } else if (text.matches(".*stop.*")) {
+            voice_text = "Object Detection Has Been Stop";
+            mTTS.speak(voice_text, TextToSpeech.QUEUE_FLUSH, null);
+            voice_text = "";
+            isStopLooking = true;
+            isAllLooking = false;
+
+          } else if (text.matches(".* all.*")) {
             voice_text = "Looking for all objects, move your phone In the environment";
-            mTTS.speak(voice_text,TextToSpeech.QUEUE_FLUSH,null);
-            isStopLooking=false;
-            isAllLooking=true;
+            mTTS.speak(voice_text, TextToSpeech.QUEUE_FLUSH, null);
+            isStopLooking = false;
+            isAllLooking = true;
             Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+          } else if (text.toLowerCase(Locale.ROOT).matches(".*turn auto.*")){
+            flashMode = "auto";
+            mTTS.speak("Setting Flash Auto Mode",TextToSpeech.QUEUE_FLUSH,null);
+
+          }else if (text.toLowerCase(Locale.ROOT).matches(".*turn on.*")){
+            flashMode = "on";
+            mTTS.speak("Setting Flash On",TextToSpeech.QUEUE_FLUSH,null);
+
+          }else if (text.toLowerCase(Locale.ROOT).matches(".*turn off.*")){
+            flashMode = "off";
+            mTTS.speak("Setting Flash off",TextToSpeech.QUEUE_FLUSH,null);
+
+          }else if(text.toLowerCase(Locale.ROOT).matches(".*light.*")){
+            if(luminousityValue<10)
+            mTTS.speak("It is really here Dark, ",TextToSpeech.QUEUE_FLUSH,null);
+            else if(luminousityValue<30){
+              mTTS.speak("There is Dim Lighting",TextToSpeech.QUEUE_FLUSH,null);
+            }else if (luminousityValue<95){
+              mTTS.speak("It sees there is moderate light",TextToSpeech.QUEUE_FLUSH,null);
+            }else if (luminousityValue<170){
+              mTTS.speak("It seems light is same as day light",TextToSpeech.QUEUE_FLUSH,null);
+            }else{
+              mTTS.speak("It seems there is too much light",TextToSpeech.QUEUE_FLUSH,null);
+
+            }
+
           }else{
             isStopLooking=false;
             isAllLooking=false;
@@ -658,47 +690,7 @@ Intent intent= getIntent();
 
 
 
-  public void turnFlashlightOn() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      try {
-       CameraManager camManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
-        String cameraId = null;
-        if (camManager != null) {
-          cameraId = camManager.getCameraIdList()[0];
-          camManager.setTorchMode(cameraId, true);
-        }
-      } catch (CameraAccessException e) {
-        Log.e("flash on", e.toString());
-      }
-    } else {
-      Camera mCamera = Camera.open();
-      Camera.Parameters parameters = mCamera.getParameters();
-      parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-      mCamera.setParameters(parameters);
-      mCamera.startPreview();
-    }
-  }
 
-  public void turnFlashlightOff() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      try {
-        String cameraId;
-        CameraManager camManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
-        if (camManager != null) {
-          cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
-          camManager.setTorchMode(cameraId, false);
-        }
-      } catch (CameraAccessException e) {
-        e.printStackTrace();
-      }
-    } else {
-      Camera mCamera = Camera.open();
-      Camera.Parameters parameters = mCamera.getParameters();
-      parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-      mCamera.setParameters(parameters);
-      mCamera.stopPreview();
-    }
-  }
 
 }
 

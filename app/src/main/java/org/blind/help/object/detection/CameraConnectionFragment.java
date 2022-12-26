@@ -56,7 +56,6 @@ public class CameraConnectionFragment extends Fragment {
   public static int csi=0;
   private static final Logger LOGGER = new Logger();
   public static boolean flash=false;
-
   public CameraManager manager;
   private static final int MINIMUM_PREVIEW_SIZE = 2177;
 

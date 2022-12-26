@@ -61,10 +61,11 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
     public boolean IsDetectionFinish = false;
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
-    public String cmd1Help = "App can perfome following functionalities:\n" +
-            "It can detect following objects.\n1 Person.\n2 Apple\n3 Mug.\n4 Car.\n5 " +
-            "Cat.\n6 bowl.\n/7 watch.\n8 mobile phone.\n9 remote control.\n10 microwave oven.\n" +
-            "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 suitcase.\n20 platter.\n";
+    public String cmd1Help = "App can do following functionalities:\n" +
+            "\nIt has Flash Light mode on, off, auto can be activated by saying turn on, turn off, turn auto."+
+            "\nYou can Check light in surrounding, by saying lightness, which include dark, day light, dim light ,moderate light, Too much Light."+
+            "\nIt can detect following objects. Person, Apple, Mug, Car, Cat. bowl. watch. mobile phone. remote control. microwave oven" +
+            "laptop. toilet. spoon. fork. chair. bottle. toaster. suitcase. platter. ";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
@@ -301,8 +302,20 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                     runOnUiThread(
                             () -> {
                                // Log.i("csi",String.valueOf(o));
+                                luminousityValue=calculateAverageLuminousity();
                                 if (o>=5) {
+                                    if(flashMode=="auto" &&!flashMode.isEmpty())
                                     flashLightChecking();
+                                    else
+                                    if(flashMode=="on" && !flashMode.isEmpty()){
+                                        turnFlashLight(true,"");
+                                        }
+                                    else if(flashMode=="off"){
+                                        turnFlashLight(false,"");
+                                        flashMode="";
+                                    }
+
+
                                    o=0;
                                 }
 o++;
@@ -330,6 +343,19 @@ o++;
 //        turnFlashLight();
 
         int threshold = 7;  // Adjust this value to your liking
+        float luminosity = calculateAverageLuminousity();
+        if (luminosity<threshold && !CameraConnectionFragment.flash)
+            turnFlashLight(true,"auto");
+        else if (CameraConnectionFragment.flash && luminosity>30 && (luminosity<95||luminosity>160)  )
+            turnFlashLight(false,"auto");
+        Log.i("luminous",String.valueOf(luminosity));
+
+
+
+
+    }
+
+    private float calculateAverageLuminousity() {
         int width = croppedBitmap.getWidth();
         int height = croppedBitmap.getHeight();
         int totalLuminance = 0;
@@ -346,25 +372,20 @@ o++;
                 numPixels++;
             }
         }
-       float luminosity= totalLuminance/numPixels;
-        if (luminosity<threshold && !CameraConnectionFragment.flash)
-            turnFlashLight(true);
-        else if (CameraConnectionFragment.flash && luminosity>30 && luminosity<80)
-            turnFlashLight(false);
-        Log.i("luminous",String.valueOf(luminosity));
-
-
-
-
+        float luminosity= totalLuminance/numPixels;
+        return luminosity;
     }
 
-    private void turnFlashLight(boolean flag) {
+    private void turnFlashLight(boolean flag, String mode) {
         Intent intent =new Intent(DetectorActivity.this, DetectorActivity.class);
         Bundle bundle =new Bundle();
         bundle.putString("voice_text",voice_text);
+        bundle.putString("mode",mode);
+
         intent.putExtra("flash",flag);
         intent.putExtra("welcome",false);
         intent.putExtras(bundle);
+
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
