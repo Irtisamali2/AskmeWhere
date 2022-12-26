@@ -96,7 +96,7 @@ public  static SizeF cameraPhysicalSize;
   public CharSequence cmdWelcome=  "Welcome, You can use following command in this app.\n1. You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
           "\n2. You can search all objects by saying \"all\"  objects after tapping on the screen\n"+
           "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?\n4. It can detect following objects: Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and platter";
-
+  public boolean speakWelcome=true;
 //  public String cmdWelcome2="Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and platter";
   public TriggerEventListener triggerEventListener;
   public float movementAfterDetection=0;
@@ -105,10 +105,18 @@ public  static SizeF cameraPhysicalSize;
   @Override
   protected void onCreate(final Bundle savedInstanceState) {
 // todo:added sensor
-    Log.i("triggerEvent","oncreate");
 
     LOGGER.d("onCreate " + this);
     super.onCreate(null);
+Intent intent= getIntent();
+   boolean flag=intent.getBooleanExtra("flash",false);
+   boolean welcome=intent.getBooleanExtra("welcome",true);
+   Bundle bundle = intent.getExtras();
+   if (bundle!=null)
+     voice_text=String.valueOf(bundle.getString("voice_text"));
+  //if(!getIntent().getStringExtra("voice_text").isEmpty())
+ // voice_text=getIntent().getStringExtra("voice_text");
+   CameraConnectionFragment.flash=flag;
     mTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
       @Override
       public void onInit(int status) {
@@ -119,7 +127,13 @@ public  static SizeF cameraPhysicalSize;
           if(rs==TextToSpeech.LANG_MISSING_DATA || rs==TextToSpeech.LANG_NOT_SUPPORTED ||rs2==TextToSpeech.ERROR){
             Toast.makeText(getApplicationContext(),"Not Supported Language",Toast.LENGTH_SHORT).show();
           }else{
-            mTTS.speak(cmdWelcome,TextToSpeech.QUEUE_FLUSH,null,null);
+            if (welcome)
+              mTTS.speak(cmdWelcome,TextToSpeech.QUEUE_FLUSH,null,null);
+            else if(flag)
+              mTTS.speak("Low light turning On Flash Light ",TextToSpeech.QUEUE_FLUSH,null,null);
+            else
+              mTTS.speak("Moderate light turning off Flash Light ",TextToSpeech.QUEUE_FLUSH,null,null);
+
 
           }
         }else {
@@ -132,6 +146,7 @@ public  static SizeF cameraPhysicalSize;
     setContentView(R.layout.tfe_od_activity_camera);
 
 
+    final CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
     speechBtn= findViewById(R.id.button);
     speechBtn.setText(cmdWelcome);
@@ -436,6 +451,9 @@ public  static SizeF cameraPhysicalSize;
     return true;
   }
 
+//  public void turnFlash(boolean flag){
+//  }
+
   private boolean hasPermission() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       return checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -525,16 +543,24 @@ public  static SizeF cameraPhysicalSize;
               },
               this,
               getLayoutId(),
-              getDesiredPreviewFrameSize());
+              getDesiredPreviewFrameSize()
 
+          );
+//      camera2Fragment.turnFlash(true);
       camera2Fragment.setCamera(cameraId);
       fragment = camera2Fragment;
+      getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+
+//            camera2Fragment.turnFlash(true);
+
+
     } else {
       fragment =
           new LegacyCameraConnectionFragment(this, getLayoutId(), getDesiredPreviewFrameSize());
+      getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
+
     }
 
-    getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
   }
 
   protected void fillBytes(final Plane[] planes, final byte[][] yuvBytes) {
@@ -629,4 +655,55 @@ public  static SizeF cameraPhysicalSize;
     }
     LOGGER.i("sensor","sensing");
   }
+
+
+
+  public void turnFlashlightOn() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      try {
+       CameraManager camManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
+        String cameraId = null;
+        if (camManager != null) {
+          cameraId = camManager.getCameraIdList()[0];
+          camManager.setTorchMode(cameraId, true);
+        }
+      } catch (CameraAccessException e) {
+        Log.e("flash on", e.toString());
+      }
+    } else {
+      Camera mCamera = Camera.open();
+      Camera.Parameters parameters = mCamera.getParameters();
+      parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+      mCamera.setParameters(parameters);
+      mCamera.startPreview();
+    }
+  }
+
+  public void turnFlashlightOff() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      try {
+        String cameraId;
+        CameraManager camManager = (CameraManager) getApplicationContext().getSystemService(Context.CAMERA_SERVICE);
+        if (camManager != null) {
+          cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
+          camManager.setTorchMode(cameraId, false);
+        }
+      } catch (CameraAccessException e) {
+        e.printStackTrace();
+      }
+    } else {
+      Camera mCamera = Camera.open();
+      Camera.Parameters parameters = mCamera.getParameters();
+      parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+      mCamera.setParameters(parameters);
+      mCamera.stopPreview();
+    }
+  }
+
 }
+
+
+
+
+
+

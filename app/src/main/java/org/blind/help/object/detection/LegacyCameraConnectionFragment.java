@@ -37,7 +37,7 @@ public class LegacyCameraConnectionFragment extends Fragment {
     ORIENTATIONS.append(Surface.ROTATION_270, 180);
   }
 
-  private Camera camera;
+  public Camera camera;
   private Camera.PreviewCallback imageListener;
   private Size desiredSize;
   /** The layout identifier to inflate for this Fragment. */
@@ -59,6 +59,7 @@ public class LegacyCameraConnectionFragment extends Fragment {
 
           try {
             Camera.Parameters parameters = camera.getParameters();
+            parameters.setFlashMode(CameraConnectionFragment.flash?Camera.Parameters.FLASH_MODE_ON:Camera.Parameters.FLASH_MODE_OFF);
             List<String> focusModes = parameters.getSupportedFocusModes();
             if (focusModes != null
                 && focusModes.contains(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
@@ -75,6 +76,7 @@ public class LegacyCameraConnectionFragment extends Fragment {
                     sizes, desiredSize.getWidth(), desiredSize.getHeight());
             parameters.setPreviewSize(previewSize.getWidth(), previewSize.getHeight());
             camera.setDisplayOrientation(90);
+
             camera.setParameters(parameters);
             camera.setPreviewTexture(texture);
           } catch (IOException exception) {

@@ -2,6 +2,8 @@
 
 package org.blind.help.object.detection;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -13,7 +15,13 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -21,6 +29,8 @@ import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -42,22 +52,23 @@ import org.blind.help.object.detection.tracking.MultiBoxTracker;
  */
 public class DetectorActivity extends CameraActivity implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
-public static String speakThis="";
-    public String searchingClass="";
+    public static String speakThis = "";
+    public String searchingClass = "";
+    int o=0;
 
     private static final int TF_OD_API_INPUT_SIZE = 416;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
-    public  boolean IsDetectionFinish=false;
+    public boolean IsDetectionFinish = false;
     private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
-    public String cmd1Help="App can perfome following functionalities:\n" +
+    public String cmd1Help = "App can perfome following functionalities:\n" +
             "It can detect following objects.\n1 Person.\n2 Apple\n3 Mug.\n4 Car.\n5 " +
             "Cat.\n6 bowl.\n/7 watch.\n8 mobile phone.\n9 remote control.\n10 microwave oven.\n" +
             "11 laptop.\n12 toilet.\n13 spoon.\n14 fork.\n15 chair.\n16 table.\n17 bottle.\n18 toaster.\n19 suitcase.\n20 platter.\n";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
-    private static final Size DESIRED_PREVIEW_SIZE = new Size(getScreenWidth(), getScreenHeight()*2);
+    private static final Size DESIRED_PREVIEW_SIZE = new Size(getScreenWidth(), getScreenHeight() * 2);
     private static final boolean SAVE_PREVIEW_BITMAP = false;
     private static final float TEXT_SIZE_DIP = 10;
     OverlayView trackingOverlay;
@@ -84,6 +95,7 @@ public static String speakThis="";
 
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
+
         final float textSizePx =
                 TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
@@ -182,35 +194,36 @@ public static String speakThis="";
                 () -> {
 
 
-                    Log.i("focal",String.valueOf(DetectorActivity.focal));
+
+                    Log.i("focal", String.valueOf(DetectorActivity.focal));
 
                     //todo: Navigation implementation
                     LOGGER.i("Running detection on image " + currTimestamp);
                     final long startTime = SystemClock.uptimeMillis();
+
+
                     final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
                     lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-                    if(!results.isEmpty() && results.get(0).getTitle().toLowerCase(Locale.ROOT).matches(re))searchingClass=results.get(0).className;
+                    if (!results.isEmpty() && results.get(0).getTitle().toLowerCase(Locale.ROOT).matches(re))
+                        searchingClass = results.get(0).className;
 
 
-                        trackI=trackI+1;
-                        if(trackI>=25 && !isHelpMenu && !isSpeaking) {
+                    trackI = trackI + 1;
+                    if (trackI >= 25 && !isHelpMenu && !isSpeaking) {
 
-                            speakThis = searchingClass.isEmpty()? cmd0 : cmd0 + " or tap and say " + searchingClass +" for searching "+searchingClass;
-                        trackI=2;
-                        }
-
-
-
-                    if (mTTS.isSpeaking()){
-                        trackI=0;
-                        isSpeaking=true;
+                        speakThis = searchingClass.isEmpty() ? cmd0 : cmd0 + " or tap and say " + searchingClass + " for searching " + searchingClass;
+                        trackI = 2;
                     }
-                    if (!mTTS.isSpeaking()){
-                        isSpeaking=false;
-
-                }
 
 
+                    if (mTTS.isSpeaking()) {
+                        trackI = 0;
+                        isSpeaking = true;
+                    }
+                    if (!mTTS.isSpeaking()) {
+                        isSpeaking = false;
+
+                    }
 
 
                     cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
@@ -227,59 +240,58 @@ public static String speakThis="";
                             break;
                     }
                     //todo: Add Help menu having list of commands
-                    if(isHelpMenu && !isSpeaking){
+                    if (isHelpMenu && !isSpeaking) {
 
-                        if(!results.isEmpty())
-                           searchingClass= results.get(0).className;
+                        if (!results.isEmpty())
+                            searchingClass = results.get(0).className;
 
 
-                            speakThis=cmd1Help;
+                        speakThis = cmd1Help;
 
-                    isHelpMenu=false;
+                        isHelpMenu = false;
                     }
 
 
                     final List<Classifier.Recognition> mappedRecognitions =
                             new LinkedList<Classifier.Recognition>();
-                    int i=0;
+                    int i = 0;
 
-                    if(!isSpeaking && !isHelpMenu && voice_text.toLowerCase(Locale.ROOT).matches(re+"|.*stop.*|.*all.*"))
-                    for (final Classifier.Recognition result : results) {
-                        movementAfterDetection=0;
-                        final RectF location = result.getLocation();
+                    if (!isSpeaking && !isHelpMenu && voice_text.toLowerCase(Locale.ROOT).matches(re + "|.*stop.*|.*all.*"))
+                        for (final Classifier.Recognition result : results) {
+                            movementAfterDetection = 0;
+                            final RectF location = result.getLocation();
 
-                        name=result.getTitle();
-                        confi=result.getConfidence();
-                        String className= result.className;
-                        Log.i("loop: Class Name: ",className);
-                        Log.i("loop: voice text: ",className);
-                        Log.i("loop: condition 1: ",String.valueOf(location != null && result.getConfidence() >= minimumConfidence  && name.toLowerCase(Locale.ROOT).matches(re)));
+                            name = result.getTitle();
+                            confi = result.getConfidence();
+                            String className = result.className;
+                            Log.i("loop: Class Name: ", className);
+                            Log.i("loop: voice text: ", className);
+                            Log.i("loop: condition 1: ", String.valueOf(location != null && result.getConfidence() >= minimumConfidence && name.toLowerCase(Locale.ROOT).matches(re)));
 
-                        if (location != null && result.getConfidence() >= minimumConfidence  && name.toLowerCase(Locale.ROOT).matches(re) ) {
-                            trackI=0;
-                            if (!isAllLooking && !isStopLooking && voice_text.toLowerCase(Locale.ROOT).contains(className) )
-                            {
+                            if (location != null && result.getConfidence() >= minimumConfidence && name.toLowerCase(Locale.ROOT).matches(re)) {
+                                trackI = 0;
+                                if (!isAllLooking && !isStopLooking && voice_text.toLowerCase(Locale.ROOT).contains(className)) {
 
-                                i++;
-                          speakThis = speakThis+ "\nobject"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence.\n";
-                           }else if (isAllLooking){
-                                i++;
-                                speakThis = speakThis+"\nobject"+i+"."+name+" with " + String.format("%.02f", confi * 100) + " confidence.\n";
-                         }else {
-                                continue;
+                                    i++;
+                                    speakThis = speakThis + "\nobject" + i + "." + name + " with " + String.format("%.02f", confi * 100) + " confidence.\n";
+                                } else if (isAllLooking) {
+                                    i++;
+                                    speakThis = speakThis + "\nobject" + i + "." + name + " with " + String.format("%.02f", confi * 100) + " confidence.\n";
+                                } else {
+                                    continue;
+                                }
+
+                                canvas1.drawRect(location, paint);
+                                confi = 100 * result.getConfidence();
+                                cropToFrameTransform.mapRect(location);
+
+                                result.setLocation(location);
+                                mappedRecognitions.add(result);
+
+
                             }
-
-                            canvas1.drawRect(location, paint);
-                            confi=100*result.getConfidence();
-                            cropToFrameTransform.mapRect(location);
-
-                            result.setLocation(location);
-                            mappedRecognitions.add(result);
-
-
+                            IsDetectionFinish = true;
                         }
-                        IsDetectionFinish=true;
-                    }
 
                     tracker.trackResults(mappedRecognitions, currTimestamp);
                     trackingOverlay.postInvalidate();
@@ -288,21 +300,74 @@ public static String speakThis="";
 
                     runOnUiThread(
                             () -> {
+                               // Log.i("csi",String.valueOf(o));
+                                if (o>=5) {
+                                    flashLightChecking();
+                                   o=0;
+                                }
+o++;
 
-                                if(!speakThis.isEmpty() ){
-                                 mTTS.speak(speakThis,TextToSpeech.QUEUE_FLUSH,null,null);
-                                   speakThis="";
-                                  if (mTTS.isSpeaking()){
-                                      isSpeaking=true;
 
-                                  }
-                                  if (!mTTS.isSpeaking()) {
-                                      isSpeaking = false;
-                                  }
-                               }
+                                if (!speakThis.isEmpty()) {
+                                    mTTS.speak(speakThis, TextToSpeech.QUEUE_FLUSH, null, null);
+                                    speakThis = "";
+                                    if (mTTS.isSpeaking()) {
+                                        isSpeaking = true;
+
+                                    }
+                                    if (!mTTS.isSpeaking()) {
+                                        isSpeaking = false;
+                                    }
+                                }
 
                             });
                 });
+    }
+
+
+    private void flashLightChecking() {
+
+//        turnFlashLight();
+
+        int threshold = 7;  // Adjust this value to your liking
+        int width = croppedBitmap.getWidth();
+        int height = croppedBitmap.getHeight();
+        int totalLuminance = 0;
+        int numPixels = 0;
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int pixel = croppedBitmap.getPixel(x, y);
+                int r = Color.red(pixel);
+                int g = Color.green(pixel);
+                int b = Color.blue(pixel);
+                int luminance = (int)(0.299 * r + 0.587 * g + 0.114 * b);  // Calculate luminance
+                totalLuminance += luminance;
+                numPixels++;
+            }
+        }
+       float luminosity= totalLuminance/numPixels;
+        if (luminosity<threshold && !CameraConnectionFragment.flash)
+            turnFlashLight(true);
+        else if (CameraConnectionFragment.flash && luminosity>30 && luminosity<80)
+            turnFlashLight(false);
+        Log.i("luminous",String.valueOf(luminosity));
+
+
+
+
+    }
+
+    private void turnFlashLight(boolean flag) {
+        Intent intent =new Intent(DetectorActivity.this, DetectorActivity.class);
+        Bundle bundle =new Bundle();
+        bundle.putString("voice_text",voice_text);
+        intent.putExtra("flash",flag);
+        intent.putExtra("welcome",false);
+        intent.putExtras(bundle);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
 

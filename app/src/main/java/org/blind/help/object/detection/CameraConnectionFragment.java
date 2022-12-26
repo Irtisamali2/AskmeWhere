@@ -25,10 +25,12 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.ImageReader;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
@@ -51,9 +53,11 @@ import org.blind.help.object.detection.env.Logger;
 
 @SuppressLint("ValidFragment")
 public class CameraConnectionFragment extends Fragment {
+  public static int csi=0;
   private static final Logger LOGGER = new Logger();
+  public static boolean flash=false;
 
-
+  public CameraManager manager;
   private static final int MINIMUM_PREVIEW_SIZE = 2177;
 
   private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -336,6 +340,13 @@ public class CameraConnectionFragment extends Fragment {
     configureTransform(width, height);
     final Activity activity = getActivity();
     final CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
+//    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+//      try {
+//        manager.setTorchMode("0",true);
+//      } catch (CameraAccessException e) {
+//        e.printStackTrace();
+//      }
+//    }
     try {
       if (!cameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
         throw new RuntimeException("Time out waiting to lock camera opening.");
@@ -390,6 +401,17 @@ public class CameraConnectionFragment extends Fragment {
     }
   }
 
+  public void turnFlash(boolean flag) {
+    previewRequestBuilder.set(CaptureRequest.FLASH_MODE,flag?CaptureRequest.FLASH_MODE_TORCH:CaptureRequest.FLASH_MODE_OFF);
+    previewRequest=previewRequestBuilder.build();
+    try {
+      captureSession.setRepeatingRequest(previewRequest,captureCallback,backgroundHandler);
+
+    }catch (CameraAccessException e){
+      e.printStackTrace();
+    }
+  }
+
   /** Creates a new {@link CameraCaptureSession} for camera preview. */
   private void createCameraPreviewSession() {
     try {
@@ -415,8 +437,10 @@ public class CameraConnectionFragment extends Fragment {
 
       previewReader.setOnImageAvailableListener(imageListener, backgroundHandler);
       previewRequestBuilder.addTarget(previewReader.getSurface());
+     // previewRequestBuilder.set(CaptureRequest., CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
 
       // Here, we create a CameraCaptureSession for camera preview.
+
       cameraDevice.createCaptureSession(
           Arrays.asList(surface, previewReader.getSurface()),
           new CameraCaptureSession.StateCallback() {
@@ -431,14 +455,16 @@ public class CameraConnectionFragment extends Fragment {
               // When the session is ready, we start displaying the preview.
               captureSession = cameraCaptureSession;
               try {
+                Log.i("camera session","here");
+
                 // Auto focus should be continuous for camera preview.
                 previewRequestBuilder.set(
                     CaptureRequest.CONTROL_AF_MODE,
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
                 // Flash is automatically enabled when necessary.
-                previewRequestBuilder.set(
-                    CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
-
+               // previewRequestBuilder.set(
+                 //   CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+            previewRequestBuilder.set(CaptureRequest.FLASH_MODE,flash?CaptureRequest.FLASH_MODE_TORCH:CaptureRequest.FLASH_MODE_OFF);
                 // Finally, we start displaying the camera preview.
                 previewRequest = previewRequestBuilder.build();
                 captureSession.setRepeatingRequest(
