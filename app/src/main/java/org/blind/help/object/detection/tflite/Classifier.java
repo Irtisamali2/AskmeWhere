@@ -17,7 +17,7 @@ public interface Classifier {
 
 
 
-    public class Recognition {
+    class Recognition {
 
         private final String id;
 

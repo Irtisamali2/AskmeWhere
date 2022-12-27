@@ -18,16 +18,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // prevent Main Activity
+        goToDetectorActivity();
+
+    }
+
+
+    public void goToDetectorActivity() {
         Intent intent =new Intent(MainActivity.this, DetectorActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
-
-
-
-
-
 
 
 }

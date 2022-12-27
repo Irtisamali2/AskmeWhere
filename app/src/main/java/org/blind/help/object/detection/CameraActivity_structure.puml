@@ -1,0 +1,412 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": false,
+    "cutInterfaceStructures": false,
+    "cutDataStructures": false,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 6,
+    "backwardDepth": 6,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "org.blind.help.object.detection.CameraActivity",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_93826901 { 
+   	label=blind
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   subgraph cluster_346203706 { 
+   	label=help
+	labeljust=l
+	fillcolor="#d8d8d8"
+	style=filled
+   
+   BorderedText1176613441[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)BorderedText</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   exteriorPaint: Paint [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   interiorPaint: Paint [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textSize: float [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ drawText(canvas: Canvas, posX: float, posY: float, text: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ drawText(canvas: Canvas, posX: float, posY: float, text: String, bgPaint: Paint)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+CameraActivity562805696[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)CameraActivity</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   REQUEST_CODE_SPEECH_INPUT: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cmd0: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cmdWelcome: CharSequence [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   debug: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   direction: String[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   handler: Handler [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   handlerThread: HandlerThread [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   history: float[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   imageConverter: Runnable [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isAllLooking: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isHelpMenu: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isProcessingFrame: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isSpeaking: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isStopLooking: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   isWelcome: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   mTTS: TextToSpeech [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   movementAfterDetection: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   postInferenceCallback: Runnable [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   previewHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   previewWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   re: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   rgbBytes: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   rotationMatrix: float[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   sensor: Sensor [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   sensorManager: SensorManager [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   speechBtn: Button [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   trackI: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   triggerEventListener: TriggerEventListener [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   useCamera2API: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   voice_text: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   xChange: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   yChange: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   yRowStride: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   yuvBytes: byte[][] [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- allPermissionsGranted(grantResults: int[]): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >- chooseCamera(): String</TD></TR>
+<TR><TD ALIGN="LEFT" ># fillBytes(planes: Plane[], yuvBytes: byte[][])</TD></TR>
+<TR><TD ALIGN="LEFT" >- isHardwareLevelSupported(characteristics: CameraCharacteristics, requiredLevel: int): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" ># onActivityResult(requestCode: int, resultCode: int, data: Intent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onCheckedChanged(buttonView: CompoundButton, isChecked: boolean)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onClick(v: View)</TD></TR>
+<TR><TD ALIGN="LEFT" ># onCreate(savedInstanceState: Bundle)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onDestroy()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onImageAvailable(reader: ImageReader)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onPause()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onPreviewFrame(bytes: byte[], camera: Camera)</TD></TR>
+<TR><TD ALIGN="LEFT" ># onPreviewSizeChosen(size: Size, rotation: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onRequestPermissionsResult(requestCode: int, permissions: String[], grantResults: int[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onResume()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onSensorChanged(event: SensorEvent)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onStart()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onStop()</TD></TR>
+<TR><TD ALIGN="LEFT" ># processImage()</TD></TR>
+<TR><TD ALIGN="LEFT" ># readyForNextImage()</TD></TR>
+<TR><TD ALIGN="LEFT" >- requestPermission()</TD></TR>
+<TR><TD ALIGN="LEFT" ># runInBackground(r: Runnable)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+DetectorActivity562805696[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)DetectorActivity</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+   IsDetectionFinish: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   borderedText: BorderedText [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   cmd1Help: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   computingDetection: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   confi: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   cropCopyBitmap: Bitmap [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   cropToFrameTransform: Matrix [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   croppedBitmap: Bitmap [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   detector: Classifier [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   frameToCropTransform: Matrix [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   lastProcessingTimeMs: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   rgbFrameBitmap: Bitmap [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >+   searchingClass: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   sensorOrientation: Integer [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   timestamp: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tracker: MultiBoxTracker [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   trackingOverlay: OverlayView [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ onAccuracyChanged(sensor: Sensor, accuracy: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onPreviewSizeChosen(size: Size, rotation: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ onStart()</TD></TR>
+<TR><TD ALIGN="LEFT" ># processImage()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+DistanceFinder49743261[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)DistanceFinder</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ getDistanceInInches(objectName: String, widthInPixels: float): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getDistanceInInchesUsingFocal(objectName: String, widthInPixels: float): String</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+DistanceModel49743261[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)DistanceModel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   measureDistanceFromCameraInInches: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   measureWidthOfObjectInInches: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   measureWidthOfObjectInPixels: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   objectName: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ calcuteDistanceFromCameraInInches(precivedWidthOfObjectInPixels: float): float</TD></TR>
+<TR><TD ALIGN="LEFT" >+ calcuteDistanceFromCameraInInchesUsingFocal(precivedWidthOfObjectInPixels: float): float</TD></TR>
+<TR><TD ALIGN="LEFT" >+ calcuteDistanceFromCameraInInchesUsingFocal(precivedWidthOfObjectInPixels: float, measureWidthOfObjectInInches: float): float</TD></TR>
+<TR><TD ALIGN="LEFT" >+ calcuteFocalLengthInPixels(): float</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ImageUtils1176613441[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ImageUtils</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- YUV2RGB(y: int, u: int, v: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ convertYUV420SPToARGB8888(input: byte[], width: int, height: int, output: int[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ convertYUV420ToARGB8888(yData: byte[], uData: byte[], vData: byte[], width: int, height: int, yRowStride: int, uvRowStride: int, uvPixelStride: int, out: int[])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getTransformationMatrix(srcWidth: int, srcHeight: int, dstWidth: int, dstHeight: int, applyRotation: int, maintainAspectRatio: boolean): Matrix</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getYUVByteSize(width: int, height: int): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveBitmap(bitmap: Bitmap)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveBitmap(bitmap: Bitmap, filename: String)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Logger1176613441[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Logger</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   messagePrefix: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   minLogLevel: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tag: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ d(format: String, args: Object...)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ e(format: String, args: Object...)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ e(t: Throwable, format: String, args: Object...)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ i(format: String, args: Object...)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ isLoggable(logLevel: int): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >- toMessage(format: String, args: Object...): String</TD></TR>
+<TR><TD ALIGN="LEFT" >+ v(format: String, args: Object...)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ w(format: String, args: Object...)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MultiBoxTracker932285733[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MultiBoxTracker</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   availableColors: Queue&lt;Integer&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   borderedText: BorderedText [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   boxPaint: Paint [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   frameHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   frameToCanvasMatrix: Matrix [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   frameWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   logger: Logger [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   mp: MediaPlayer [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   screenRects: List&lt;Pair&lt;Float, RectF&gt;&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   sensorOrientation: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   textSizePx: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   trackedObjects: List&lt;TrackedRecognition&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ draw(canvas: Canvas)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ drawDebug(canvas: Canvas)</TD></TR>
+<TR><TD ALIGN="LEFT" >- processResults(results: List&lt;Recognition&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ trackResults(results: List&lt;Recognition&gt;, timestamp: long)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+OverlayView176279420[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)OverlayView</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   callbacks: List&lt;DrawCallback&gt; [0..*]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ addCallback(callback: DrawCallback)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ draw(canvas: Canvas)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TrackedRecognition1045126685[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TrackedRecognition</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   color: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   detectionConfidence: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   location: RectF [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   title: String [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Utils1176613441[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Utils</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ loadModelFile(assets: AssetManager, modelFilename: String): MappedByteBuffer</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+YoloV4Classifier841062386[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)YoloV4Classifier</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   imgData: ByteBuffer [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   intValues: int[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   isModelQuantized: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   labels: Vector&lt;String&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   mNmsThresh: float [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   tfLite: Interpreter [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" ># box_intersection(a: RectF, b: RectF): float</TD></TR>
+<TR><TD ALIGN="LEFT" ># box_iou(a: RectF, b: RectF): float</TD></TR>
+<TR><TD ALIGN="LEFT" ># box_union(a: RectF, b: RectF): float</TD></TR>
+<TR><TD ALIGN="LEFT" ># convertBitmapToByteBuffer(bitmap: Bitmap): ByteBuffer</TD></TR>
+<TR><TD ALIGN="LEFT" >+ create(btnName: String, ctx: Context, assetManager: AssetManager, modelFilename: String, labelFilename: String, isQuantized: boolean): Classifier</TD></TR>
+<TR><TD ALIGN="LEFT" >- getDetectionsForTiny(byteBuffer: ByteBuffer, bitmap: Bitmap): ArrayList&lt;Recognition&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" ># nms(list: ArrayList&lt;Recognition&gt;): ArrayList&lt;Recognition&gt;</TD></TR>
+<TR><TD ALIGN="LEFT" ># overlap(x1: float, w1: float, x2: float, w2: float): float</TD></TR>
+<TR><TD ALIGN="LEFT" >+ recognizeImage(bitmap: Bitmap): ArrayList&lt;Recognition&gt;</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+} 
+
+'edges    
+CameraActivity562805696 -> DetectorActivity562805696[arrowhead=none, arrowtail=empty, dir=both];
+DetectorActivity562805696 -> BorderedText1176613441[label="borderedText
+[0..1]"];
+DetectorActivity562805696 -> MultiBoxTracker932285733[label="tracker
+[0..1]"];
+DetectorActivity562805696 -> OverlayView176279420[label="trackingOverlay
+[0..1]"];
+DetectorActivity562805696 -> YoloV4Classifier841062386[label="onPreviewSizeChosen() -> create()"];
+MultiBoxTracker932285733 -> BorderedText1176613441[label="borderedText
+[0..1]"];
+MultiBoxTracker932285733 -> ImageUtils1176613441[label="draw() -> getTransformationMatrix()"];
+MultiBoxTracker932285733 -> Logger1176613441[label="logger
+[0..1]"];
+MultiBoxTracker932285733 -> TrackedRecognition1045126685[label="trackedObjects
+[0..*]"];
+YoloV4Classifier841062386 -> DistanceFinder49743261[label="getDetectionsForTiny() -> getDistanceInInches()"];
+YoloV4Classifier841062386 -> Logger1176613441[label="create() -> w()"];
+YoloV4Classifier841062386 -> Utils1176613441[label="create() -> loadModelFile()"];
+    
+}
+@enduml

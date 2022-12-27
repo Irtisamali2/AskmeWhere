@@ -154,11 +154,13 @@ public class MultiBoxTracker   {
       float cornerSize = Math.min(trackedPos.width(), trackedPos.height()) / 8.0f;
       canvas.drawRoundRect(trackedPos, cornerSize, cornerSize, boxPaint);
 
+      //information in bounding box to draw regarding object
       final String labelString =
           !TextUtils.isEmpty(recognition.title)
               ? String.format("%s %.2f", recognition.title, (100 * recognition.detectionConfidence))
               : String.format("%.2f", (100 * recognition.detectionConfidence));
     name=recognition.title;
+    //bordered text to draw
       borderedText.drawText(
               canvas, trackedPos.left + cornerSize, trackedPos.top, labelString + "%", boxPaint);
 

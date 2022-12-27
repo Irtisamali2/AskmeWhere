@@ -54,7 +54,7 @@ public class CameraConnectionFragment extends Fragment {
   private static final Logger LOGGER = new Logger();
 
 
-  private static final int MINIMUM_PREVIEW_SIZE = 2177;
+  private static final int MINIMUM_PREVIEW_SIZE = 500;
 
   private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
 
@@ -437,14 +437,17 @@ public class CameraConnectionFragment extends Fragment {
                     CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
                 // Flash is automatically enabled when necessary.
                 previewRequestBuilder.set(
-                    CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                    CaptureRequest.CONTROL_AE_MODE , CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
+
+//                previewRequestBuilder.set(CaptureRequest.FLASH_MODE,
+//                        CaptureRequest.FLASH_MODE_TORCH);
                 // Finally, we start displaying the camera preview.
                 previewRequest = previewRequestBuilder.build();
                 captureSession.setRepeatingRequest(
                     previewRequest, captureCallback, backgroundHandler);
               } catch (final CameraAccessException e) {
-                LOGGER.e(e, "Exception!");
+                LOGGER.e(e, "Camera Flash Exception!");
               }
             }
 

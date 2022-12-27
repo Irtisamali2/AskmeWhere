@@ -520,6 +520,7 @@ public  static SizeF cameraPhysicalSize;
                 public void onPreviewSizeChosen(final Size size, final int rotation) {
                   previewHeight = size.getHeight();
                   previewWidth = size.getWidth();
+
                   CameraActivity.this.onPreviewSizeChosen(size, rotation);
                 }
               },

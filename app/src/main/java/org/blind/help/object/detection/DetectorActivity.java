@@ -95,11 +95,11 @@ public static String speakThis="";
         int cropSize = TF_OD_API_INPUT_SIZE;
 
         try {
-            Button btn = (Button) findViewById(R.id.button);
+          //  Button btn = (Button) findViewById(R.id.button);
             detector =
                     YoloV4Classifier.create(
-                            btn.getText().toString(),
-                            this,
+                          //  btn.getText().toString(),
+                           // this,
                             getAssets(),
                             TF_OD_API_MODEL_FILE,
                             TF_OD_API_LABELS_FILE,
@@ -136,18 +136,19 @@ public static String speakThis="";
         cropToFrameTransform = new Matrix();
         frameToCropTransform.invert(cropToFrameTransform);
 
-        trackingOverlay = (OverlayView) findViewById(R.id.tracking_overlay);
+        trackingOverlay = findViewById(R.id.tracking_overlay);
         trackingOverlay.addCallback(
                 new DrawCallback() {
                     @Override
                     public void drawCallback(final Canvas canvas) {
+                        //draw bounding box
                         tracker.draw(canvas);
                         if (isDebug()) {
                             tracker.drawDebug(canvas);
                         }
                     }
                 });
-
+        //bounding box width and height
         tracker.setFrameConfiguration(previewWidth, previewHeight, sensorOrientation);
     }
 
@@ -280,7 +281,7 @@ public static String speakThis="";
                         }
                         IsDetectionFinish=true;
                     }
-
+                    //bounding box tracking
                     tracker.trackResults(mappedRecognitions, currTimestamp);
                     trackingOverlay.postInvalidate();
 
