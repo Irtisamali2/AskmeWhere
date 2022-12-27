@@ -2,7 +2,6 @@
 
 package org.blind.help.object.detection;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -15,12 +14,7 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
 import android.media.ImageReader.OnImageAvailableListener;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
@@ -29,8 +23,6 @@ import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Button;
 import android.widget.Toast;
-
-import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -63,7 +55,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
             "\nIt has Flash Light mode on, off, auto can be activated by saying turn on, turn off, turn auto."+
             "\nYou can Check light in surrounding, by saying lightness, which include dark, day light, dim light ,moderate light, Too much Light."+
             "\nIt can detect following objects. Person, Apple, Mug, Car, Cat. bowl. watch. mobile phone. remote control. microwave oven" +
-            "laptop. toilet. spoon. fork. chair. bottle. toaster. suitcase. platter. \nClose App by long press";
+            "laptop. toilet. spoon. bottle. toaster. suitcase. platter. \nClose App by long press";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
@@ -294,13 +286,13 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
                     runOnUiThread(
                             () -> {
-                                if(flashMode.toLowerCase(Locale.ROOT).matches("auto")&& !flashMode.isEmpty())
-                                    flashLightChecking();
+
                                // Log.i("csi",String.valueOf(o));
                                 luminousityValue=calculateAverageLuminousity();
                                 if (o>=5) {
 
-
+                                    if(flashMode.toLowerCase(Locale.ROOT).matches("auto")&& !flashMode.isEmpty())
+                                        flashLightChecking();
                                     if(flashMode.toLowerCase(Locale.ROOT).matches("on") && !flashMode.isEmpty()){
                                         turnFlashLight(true,"");
                                         }
@@ -341,7 +333,7 @@ o++;
 
         if (luminosity<threshold && !CameraConnectionFragment.flash)
             turnFlashLight(true,"auto");
-        else if (CameraConnectionFragment.flash && luminosity>30 && (luminosity<95||luminosity>160)  )
+        else if (CameraConnectionFragment.flash && ((luminosity>30 && luminosity<85) || luminosity>150) )
             turnFlashLight(false,"auto");
         Log.i("luminous",String.valueOf(luminosity));
 
@@ -403,7 +395,7 @@ o++;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.tfe_od_camera_connection_fragment_tracking;
+        return R.layout.camera_connection_fragment_tracking;
     }
 
     @Override

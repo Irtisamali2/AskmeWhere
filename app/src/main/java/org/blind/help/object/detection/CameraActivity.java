@@ -32,7 +32,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.util.Size;
 import android.util.SizeF;
@@ -83,7 +82,7 @@ public  static SizeF cameraPhysicalSize;
   private int yRowStride;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
-  public String re = ".*apple.*|.*platter.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*watch.*|.*bottle.*|.*chair.*|.*toilet.*|.*spoon.*|.*toaster.*|.*fork.*|.*suitcase  .*|.*laptop.*";
+  public String re = ".*apple.*|.*platter.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*watch.*|.*bottle.*|.*toilet.*|.*spoon.*|.*toaster.*|.*suitcase.*|.*laptop.*";
  public float xChange =0;
  public float yChange = 0;
  public float [] history = new float[2];
@@ -148,7 +147,7 @@ Intent intent= getIntent();
       }
     }, "com.google.android.tts");
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    setContentView(R.layout.tfe_od_activity_camera);
+    setContentView(R.layout.activity_camera);
 
 
     final CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
