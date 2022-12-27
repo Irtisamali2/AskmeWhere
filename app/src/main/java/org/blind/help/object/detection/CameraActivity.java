@@ -118,6 +118,10 @@ Intent intent= getIntent();
    if (bundle!=null) {
      voice_text = String.valueOf(bundle.getString("voice_text"));
      flashMode=String.valueOf(bundle.getString("mode"));
+     isStopLooking = bundle.getBoolean("isStopLooking");
+   isAllLooking =  bundle.getBoolean("isAllLooking");
+
+
      Log.i("flash", flashMode);
    }
    CameraConnectionFragment.flash=flag;
@@ -395,7 +399,7 @@ Intent intent= getIntent();
         if (resultCode == RESULT_OK && null != data) {
           ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 
-          String text = result.get(0);
+          String text = result.get(0).toLowerCase(Locale.ROOT);
 
 
           if (text.matches(re)) {
@@ -444,8 +448,8 @@ Intent intent= getIntent();
             }
 
           }else{
-            isStopLooking=false;
-            isAllLooking=false;
+           // isStopLooking=false;
+           // isAllLooking=false;
             mTTS.speak("I am not sure what are you looking for try different object",TextToSpeech.QUEUE_FLUSH,null);
             voice_text="";
 

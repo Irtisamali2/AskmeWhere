@@ -247,9 +247,9 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             movementAfterDetection = 0;
                             final RectF location = result.getLocation();
 
-                            name = result.getTitle();
+                            name = result.getTitle().toLowerCase(Locale.ROOT);
                             confi = result.getConfidence();
-                            String className = result.className;
+                            String className = result.className.toLowerCase(Locale.ROOT);
                             Log.i("loop: Class Name: ", className);
                             Log.i("loop: voice text: ", className);
                             Log.i("loop: condition 1: ", String.valueOf(location != null && result.getConfidence() >= minimumConfidence && name.toLowerCase(Locale.ROOT).matches(re)));
@@ -287,7 +287,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                     runOnUiThread(
                             () -> {
 
-                               // Log.i("csi",String.valueOf(o));
+                               Log.i("csi",voice_text);
                                 luminousityValue=calculateAverageLuminousity();
                                 if (o>=5) {
 
@@ -368,6 +368,10 @@ o++;
         Bundle bundle =new Bundle();
         bundle.putString("voice_text",voice_text);
         bundle.putString("mode",mode);
+//        isStopLooking = false;
+//        isAllLooking = true;
+        bundle.putBoolean("isStopLooking",isStopLooking);
+        bundle.putBoolean("isAllLooking",isAllLooking);
 
         intent.putExtra("flash",flag);
         intent.putExtra("welcome",false);
