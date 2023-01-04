@@ -288,11 +288,12 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             () -> {
 
                                Log.i("csi",voice_text);
-                                luminousityValue=calculateAverageLuminousity();
-                                if (o>=5) {
+                                luminousityValue=calculateAverageLuminousity()+luminousityValue;
 
+                                if (o>=5) {
+                                    luminousityValue=luminousityValue/5;
                                     if(flashMode.toLowerCase(Locale.ROOT).matches("auto")&& !flashMode.isEmpty())
-                                        flashLightChecking();
+                                        flashLightChecking(luminousityValue);
                                     if(flashMode.toLowerCase(Locale.ROOT).matches("on") && !flashMode.isEmpty()){
                                         turnFlashLight(true,"");
                                         }
@@ -301,7 +302,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                                         flashMode="";
                                     }
 
-
+                                    luminousityValue=0;
                                    o=0;
                                 }
 o++;
@@ -324,16 +325,15 @@ o++;
     }
 
 
-    private void flashLightChecking() {
+    private void flashLightChecking(float luminosity) {
 
 //        turnFlashLight();
 
-        int threshold = 7;  // Adjust this value to your liking
-        float luminosity = calculateAverageLuminousity();
+        int threshold = 13;  // Adjust this value to your liking
 
         if (luminosity<threshold && !CameraConnectionFragment.flash)
             turnFlashLight(true,"auto");
-        else if (CameraConnectionFragment.flash && ((luminosity>30 && luminosity<85) || luminosity>150) )
+        else if (CameraConnectionFragment.flash && ((luminosity>65 && luminosity<115)||(luminosity>145) ))
             turnFlashLight(false,"auto");
         Log.i("luminous",String.valueOf(luminosity));
 
