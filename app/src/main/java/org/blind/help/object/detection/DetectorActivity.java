@@ -329,11 +329,11 @@ o++;
 
 //        turnFlashLight();
 
-        int threshold = 13;  // Adjust this value to your liking
+        int threshold = 25;  // Adjust this value to your liking
 
         if (luminosity<threshold && !CameraConnectionFragment.flash)
             turnFlashLight(true,"auto");
-        else if (CameraConnectionFragment.flash && ((luminosity>65 && luminosity<115)||(luminosity>145) ))
+        else if (CameraConnectionFragment.flash && ((luminosity>65 && luminosity<80)||(luminosity>125) ))
             turnFlashLight(false,"auto");
         Log.i("luminous",String.valueOf(luminosity));
 

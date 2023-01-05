@@ -111,6 +111,7 @@ public  static SizeF cameraPhysicalSize;
 // todo:added sensor
 
     super.onCreate(null);
+
 Intent intent= getIntent();
    boolean flag=intent.getBooleanExtra("flash",false);
    boolean welcome=intent.getBooleanExtra("welcome",true);
@@ -158,6 +159,8 @@ Intent intent= getIntent();
 
     speechBtn= findViewById(R.id.button);
     speechBtn.setText(cmdWelcome);
+//light
+
 
 
     speechBtn.setOnLongClickListener(new View.OnLongClickListener() {
