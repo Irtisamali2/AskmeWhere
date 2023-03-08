@@ -55,6 +55,7 @@ public interface Classifier {
             return new RectF(location);
         }
 
+
         public void setLocation(RectF location) {
             this.location = location;
         }

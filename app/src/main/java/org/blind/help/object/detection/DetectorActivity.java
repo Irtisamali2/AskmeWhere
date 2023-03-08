@@ -50,12 +50,12 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
     private static final String TF_OD_API_MODEL_FILE = "yolov4-416-fp16.tflite";
     public boolean IsDetectionFinish = false;
-    private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/coco.txt";
+    private static final String TF_OD_API_LABELS_FILE = "file:///android_asset/mofifiedLabels.txt";
     public String cmd1Help = "App can do following functionalities:\n" +
             "\nIt has Flash Light mode on, off, auto can be activated by saying turn on, turn off, turn auto."+
             "\nYou can Check light in surrounding, by saying lightness, which include dark, day light, dim light ,moderate light, Too much Light."+
-            "\nIt can detect following objects. Person, Apple, Mug, Car, Cat. bowl. watch. mobile phone. remote control. microwave oven" +
-            "laptop. toilet. spoon. bottle. toaster. suitcase. platter. \nClose App by long press";
+            "\nIt can detect following objects. Person, Apple, Mug, Car, Cat. bowl. sink. mobile phone. remote control. microwave oven" +
+            "laptop. toilet. spoon. bottle. toaster. suitcase. toothbrush. \nClose App by long press";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
     private static final boolean MAINTAIN_ASPECT = false;
@@ -92,16 +92,14 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
         borderedText = new BorderedText(textSizePx);
         borderedText.setTypeface(Typeface.MONOSPACE);
-
+        // MultiBoxTracker class use computer vision techniques to detect and track multiple objects in image sequence .
         tracker = new MultiBoxTracker(this);
 
         int cropSize = TF_OD_API_INPUT_SIZE;
 
         try {
-            Button btn = (Button) findViewById(R.id.button);
             detector =
                     YoloV4Classifier.create(
-                            btn.getText().toString(),
                             this,
                             getAssets(),
                             TF_OD_API_MODEL_FILE,
@@ -123,11 +121,19 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         previewHeight = size.getHeight();
 
         sensorOrientation = rotation - getScreenOrientation();
-
+        //the rgbFrameBitmap is used to store the current frame of a camera preview,
+        // while the croppedBitmap object is used to store a crop of the rgbFrameBitmap image.
         rgbFrameBitmap = Bitmap.createBitmap(previewWidth, previewHeight, Config.ARGB_8888);
         croppedBitmap = Bitmap.createBitmap(cropSize, cropSize, Config.ARGB_8888);
 
+
+        //This code creates two Bitmap objects rgbFrameBitmap and croppedBitmap and initializes variables used for object detection and tracking such as frameToCropTransform,
+        // cropToFrameTransform and trackingOverlay.
+        // It also sets up the MultiBoxTracker class and associates it with the tracking overlay to draw detection bounding box and other information on the image.
         frameToCropTransform =
+                //This code creates two Bitmap objects rgbFrameBitmap and croppedBitmap and initializes variables used for object detection and
+                // tracking such as frameToCropTransform, cropToFrameTransform and trackingOverlay.
+                // It also sets up the MultiBoxTracker class and associates it with the tracking overlay to draw detection bounding box and other information on the image.
                 ImageUtils.getTransformationMatrix(
                         previewWidth, previewHeight,
                         cropSize, cropSize,
@@ -159,16 +165,26 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         trackingOverlay.postInvalidate();
 
         // No mutex needed as this method is not reentrant.
+        //It is checking if the computingDetection flag is set, and if it is, it is calling the readyForNextImage()
+        // method and returning, to indicate that the current image is being processed and a new one can be taken.
         if (computingDetection) {
             readyForNextImage();
             return;
         }
         computingDetection = true;
-
+        //It is checking if the computingDetection flag is set, and if it is, it is calling the readyForNextImage() method and returning,
+        // to indicate that the current image is being processed and a new one can be taken.
         rgbFrameBitmap.setPixels(getRgbBytes(), 0, previewWidth, 0, 0, previewWidth, previewHeight);
-
+        //It is checking if the computingDetection flag is set, and if it is, it is calling the readyForNextImage()
+        // method and returning, to indicate that the current image is being processed and a new one can be taken.
         readyForNextImage();
 
+        //The first argument to this method is the rgbFrameBitmap, which is likely a Bitmap object that represents
+        // the image to be drawn. The second argument is the frameToCropTransform, which is likely a Matrix object that defines a transformation to be applied to the image
+        // before it is drawn. This could include things like translation, rotation, scaling, or skewing of the image.
+        //
+        //The third argument is set to null which means the paint to be used when drawing the bitmap is null, and the default value will be used,
+        // default paint just draws the image onto the canvas without any other effects.
         final Canvas canvas = new Canvas(croppedBitmap);
         canvas.drawBitmap(rgbFrameBitmap, frameToCropTransform, null);
         // For examining the actual TF input.
@@ -193,7 +209,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                     if (!results.isEmpty() && results.get(0).getTitle().toLowerCase(Locale.ROOT).matches(re))
                         searchingClass = results.get(0).className;
 
-
+                    // trackI is a waiting for some seconds
                     trackI = trackI + 1;
                     if (trackI >= 25 && !isHelpMenu && !isSpeaking) {
 
@@ -255,6 +271,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                             Log.i("loop: condition 1: ", String.valueOf(location != null && result.getConfidence() >= minimumConfidence && name.toLowerCase(Locale.ROOT).matches(re)));
 
                             if (location != null && result.getConfidence() >= minimumConfidence && name.toLowerCase(Locale.ROOT).matches(re)) {
+                                // count the number of objects For example object 1 person is about 20 cm away with 90% confidence
                                 trackI = 0;
                                 if (!isAllLooking && !isStopLooking && voice_text.toLowerCase(Locale.ROOT).contains(className)) {
 
@@ -280,6 +297,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
                         }
 
                     tracker.trackResults(mappedRecognitions, currTimestamp);
+                        // postInvalidate() is used to prevention of processing on the same image
                     trackingOverlay.postInvalidate();
 
                     computingDetection = false;
@@ -328,7 +346,7 @@ o++;
     private void flashLightChecking(float luminosity) {
 
 //        turnFlashLight();
-
+        //if value is less than 25 then there is a night z
         int threshold = 25;  // Adjust this value to your liking
 
         if (luminosity<threshold && !CameraConnectionFragment.flash)
@@ -359,6 +377,7 @@ o++;
                 numPixels++;
             }
         }
+        // calculating average luminosity in on frame like 32 pixel in frame and we are taking average of all them
         float luminosity= totalLuminance/numPixels;
         return luminosity;
     }

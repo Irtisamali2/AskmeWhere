@@ -1,10 +1,17 @@
+Person
 Apple
 Car
 Cat
 Microwave oven
 Mobile phone
 Mug
-Person
-Platter
+Toothbrush
 Remote control
-Watch
+Sink
+Bowl
+Toilet
+Spoon
+Bottle
+Suitcase
+Toaster
+Laptop

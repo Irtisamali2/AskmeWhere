@@ -27,9 +27,6 @@ public class DistanceModel {
 
         return (float) ((measureWidthOfObjectInInches * DetectorActivity.focal) / precivedWidthOfObjectInPixels);
     }
-    public float calcuteDistanceFromCameraInInchesUsingFocal( float precivedWidthOfObjectInPixels,float measureWidthOfObjectInInches) {
 
-        return (float) ((measureWidthOfObjectInInches * DetectorActivity.focal) / precivedWidthOfObjectInPixels);
-    }
 
 }

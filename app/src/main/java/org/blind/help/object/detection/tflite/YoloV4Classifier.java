@@ -33,7 +33,6 @@ import org.tensorflow.lite.nnapi.NnApiDelegate;
 public class YoloV4Classifier implements Classifier {
 
     public static Classifier create(
-            String btnName,
             final Context ctx,
             final AssetManager assetManager,
             final String modelFilename,
@@ -167,6 +166,7 @@ public class YoloV4Classifier implements Classifier {
                                 @Override
                                 public int compare(final Recognition lhs, final Recognition rhs) {
                                     // Intentionally reversed to put high confidence at the head of the queue.
+                                    // compare first and second object here
                                     return Float.compare(rhs.getConfidence(), lhs.getConfidence());
                                 }
                             });
@@ -252,59 +252,6 @@ public class YoloV4Classifier implements Classifier {
     }
 
 
-    private ArrayList<Recognition> getDetectionsForFull(ByteBuffer byteBuffer, Bitmap bitmap) {
-        ArrayList<Recognition> detections = new ArrayList<Recognition>();
-        Map<Integer, Object> outputMap = new HashMap<>();
-        outputMap.put(0, new float[1][OUTPUT_WIDTH_FULL[0]][4]);
-        outputMap.put(1, new float[1][OUTPUT_WIDTH_FULL[1]][labels.size()]);
-        Object[] inputArray = {byteBuffer};
-        tfLite.runForMultipleInputsOutputs(inputArray, outputMap);
-
-        int gridWidth = OUTPUT_WIDTH_FULL[0];
-        float[][][] bboxes = (float [][][]) outputMap.get(0);
-        float[][][] out_score = (float[][][]) outputMap.get(1);
-
-        for (int i = 0; i < gridWidth;i++){
-            float maxClass = 0;
-            int detectedClass = -1;
-            final float[] classes = new float[labels.size()];
-            for (int c = 0;c< labels.size();c++){
-                classes [c] = out_score[0][i][c];
-            }
-            for (int c = 0;c<labels.size();++c){
-                if (classes[c] > maxClass){
-                    detectedClass = c;
-                    maxClass = classes[c];
-                }
-            }
-            final float score = maxClass;
-            if (score > getObjThresh()){
-
-                final float xPos = bboxes[0][i][0];
-                final float yPos = bboxes[0][i][1];
-                final float w = bboxes[0][i][2];
-                final float h = bboxes[0][i][3];
-                // calculating the horizontal width of the bounding box of object in pixels
-                float w_pixel = (float) w;
-//                float w_pixel = Math.min(bitmap.getWidth() - 1, xPos + w / 2)-Math.max(0, xPos - w / 2);
-
-                Log.i("pixel",String.valueOf(w_pixel));
-
-                //
-                String distanceInInches = DistanceFinder.getDistanceInInchesUsingFocal(labels.get(detectedClass),w_pixel);
-                Log.i("pixel to distance",String.valueOf(distanceInInches));
-                // getLable
-
-                final RectF rectF = new RectF(
-                        Math.max(0, xPos - w / 2),
-                        Math.max(0, yPos - h / 2),
-                        Math.min(bitmap.getWidth() - 1, xPos + w / 2),
-                        Math.min(bitmap.getHeight() - 1, yPos + h / 2));
-                detections.add(new Recognition("" + i, labels.get(detectedClass)+" is "+distanceInInches+" away",score,rectF,detectedClass,labels.get(detectedClass) ));
-            }
-        }
-        return detections;
-    }
 
     private ArrayList<Recognition> getDetectionsForTiny(ByteBuffer byteBuffer, Bitmap bitmap) {
         ArrayList<Recognition> detections = new ArrayList<Recognition>();
@@ -364,13 +311,12 @@ public class YoloV4Classifier implements Classifier {
     }
 
     public ArrayList<Recognition> recognizeImage(Bitmap bitmap) {
+        // convertBitmapToByteBuffer is a container used to transmit binary data
         ByteBuffer byteBuffer = convertBitmapToByteBuffer(bitmap);
         ArrayList<Recognition> detections;
-        if (isTiny) {
             detections = getDetectionsForTiny(byteBuffer, bitmap);
-        } else {
-            detections = getDetectionsForFull(byteBuffer, bitmap);
-        }
+
+
         final ArrayList<Recognition> recognitions = nms(detections);
         return recognitions;
     }

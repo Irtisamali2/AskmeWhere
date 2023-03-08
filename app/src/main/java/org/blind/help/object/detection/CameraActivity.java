@@ -82,7 +82,7 @@ public  static SizeF cameraPhysicalSize;
   private int yRowStride;
   private Runnable postInferenceCallback;
   private Runnable imageConverter;
-  public String re = ".*apple.*|.*platter.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*watch.*|.*bottle.*|.*toilet.*|.*spoon.*|.*toaster.*|.*suitcase.*|.*laptop.*";
+  public String re = ".*apple.*|.*toothbrush.*|.*car.*|.*cat.*|.*microwave.*|.*mobile.*|.*mug.*|.*person.*|.*bowl.*|.*remote.*|.*sink.*|.*bottle.*|.*toilet.*|.*spoon.*|.*toaster.*|.*suitcase.*|.*laptop.*";
  public float xChange =0;
  public float yChange = 0;
  public float [] history = new float[2];
@@ -95,13 +95,13 @@ public  static SizeF cameraPhysicalSize;
   public String cmd0="Tap on screen search for object or double tap for the help?";
   public CharSequence cmdWelcome=  "Welcome, You can use following command in this app.\n1You can detect object By Tapping on Screen and saying any sentence containing any of object from above objects\n" +
           "\n2. You can search all objects by saying 'all'  objects after tapping on the screen"+
-          "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?\n4. It can detect following objects: Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet," +
-          "spoon,fork,chair,table,bottle,toaster,suitcase, and platter." +
+          "\n3. Tap on screen, then speak the object you are looking for or double tap for the help?\n4. It can detect following objects: Person,Apple,Mug,Car,Cat,bowl, sink,mobile phone,remote control,microwave oven,laptop,toilet," +
+          "spoon,fork,chair,table,bottle,toaster,suitcase, and toothbrush." +
           "\n5. Say turn on, turn off or turn auto to set Mobile Flash Light Mode." +
            "\n6 You can Check light in surrounding, by saying lightness, which include dark, day light, dim light ,moderate light, Too much Light. \n7 Close app by long press";
 
   public boolean speakWelcome=true;
-//  public String cmdWelcome2="Person,Apple,Mug,Car,Cat,bowl, watch,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and platter";
+//  public String cmdWelcome2="Person,Apple,Mug,Car,Cat,bowl, sink,mobile phone,remote control,microwave oven,laptop,toilet,spoon,fork,chair,table,bottle,toaster,suitcase, and toothbrush";
   public TriggerEventListener triggerEventListener;
   public float movementAfterDetection=0;
   public int  REQUEST_CODE_SPEECH_INPUT=1000;
@@ -151,6 +151,8 @@ Intent intent= getIntent();
         }
       }
     }, "com.google.android.tts");
+    // This code is used to keep the screen of an Android device on and prevent the device from going into sleep mode.
+    // It does this by adding the FLAG_KEEP_SCREEN_ON flag to the window.
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     setContentView(R.layout.activity_camera);
 
@@ -159,7 +161,6 @@ Intent intent= getIntent();
 
     speechBtn= findViewById(R.id.button);
     speechBtn.setText(cmdWelcome);
-//light
 
 
 
@@ -195,12 +196,16 @@ Intent intent= getIntent();
         mTTS.stop();
         isSpeaking=false;
         trackI=0;
+        // text to speach when user ask system for detection
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        // fine tune the result by EXTRA_LANGUAGE_MODEL
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        //setting language
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,Locale.getDefault());
         try {
 
           mTTS.stop();
+          // getting result know
           startActivityForResult(intent,REQUEST_CODE_SPEECH_INPUT );//speech
         }catch (Exception e){
           Toast.makeText(getApplicationContext(), " "+e.getMessage().toString(),Toast.LENGTH_SHORT).show();
@@ -225,6 +230,7 @@ Intent intent= getIntent();
 
 
   }
+  // returns the value of the rgbBytes red blue and green for each pixel
 
   protected int[] getRgbBytes() {
     imageConverter.run();
@@ -259,7 +265,7 @@ Intent intent= getIntent();
     isProcessingFrame = true;
     yuvBytes[0] = bytes;
     yRowStride = previewWidth;
-
+    //ARGB (Alpha, Red, Green, Blue) color space. By doing this, the image data can be represented in a way that is more easily understood and processed by the application.
     imageConverter =
         new Runnable() {
           @Override
@@ -267,7 +273,8 @@ Intent intent= getIntent();
             ImageUtils.convertYUV420SPToARGB8888(bytes, previewWidth, previewHeight, rgbBytes);
           }
         };
-
+    //This code creates a Runnable object that releases resources used during object detection and tracking by adding the image data back to the camera's buffer,
+    // and indicating that the application is ready to process new frames.
     postInferenceCallback =
         new Runnable() {
           @Override
@@ -279,6 +286,7 @@ Intent intent= getIntent();
     processImage();
   }
 
+  //This code is defining the onImageAvailable() method, which is likely being called each time a new image is available from the camera.
   /** Callback for Camera2 API */
   @Override
   public void onImageAvailable(final ImageReader reader) {
@@ -395,6 +403,11 @@ Intent intent= getIntent();
   protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     mTTS.stop();
 
+    //requestCode: an integer value that was passed to startActivityForResult when the activity was started.
+    // It is used to identify the request and match the result with the request that initiated it.
+    //resultCode: an integer value indicating the result of the operation. It is usually Activity.RESULT_OK if the operation was successful,
+    // or Activity.RESULT_CANCELED if the user cancelled the operation or if there was an error.
+    //data: an Intent object containing additional data about the result, if any.
     super.onActivityResult(requestCode, resultCode, data);
     if(requestCode==0) return;
     switch (requestCode){
@@ -601,6 +614,7 @@ Intent intent= getIntent();
     // advance the actual necessary dimensions of the yuv planes.
     for (int i = 0; i < planes.length; ++i) {
       final ByteBuffer buffer = planes[i].getBuffer();
+      //YUV is a color space typically used to represent images in a manner more similar to the way that humans perceive color.
       if (yuvBytes[i] == null) {
         yuvBytes[i] = new byte[buffer.capacity()];
       }

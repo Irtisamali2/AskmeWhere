@@ -23,11 +23,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.ObjectDetection">
-        <receiver android:name=".VoiceBroadcastReciever">
-            <intent-filter>
-                <action android:name="android.speech.action.VOICE_SEARCH_RESULTS" />
-            </intent-filter>
-        </receiver>
         <activity
             android:name="org.blind.help.object.detection.DetectorActivity"
             android:label="Blind Helper"
