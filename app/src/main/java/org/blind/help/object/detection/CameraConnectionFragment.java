@@ -182,6 +182,7 @@ public class CameraConnectionFragment extends Fragment {
   }
 
   protected static Size chooseOptimalSize(final Size[] choices, final int width, final int height) {
+
     final int minSize = Math.max(Math.min(width, height), MINIMUM_PREVIEW_SIZE);
      Size desiredSize = new Size(width, height);
 

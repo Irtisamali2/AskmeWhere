@@ -1,3 +1,3 @@
-# askmewhere
+# AskmeWhere
 
-## Develop By Sardar Badar For Blind People
+## Developed for helping Blind People in navigation 
